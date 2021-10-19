@@ -11,40 +11,51 @@ namespace BibliotecaPiezas {
     /// </summary>
     public class Pieza
     {
-        private double _x;
-        private double _y;
-        private double _orientacion;
+        private int _x;
+        private int _y;
+        private int _orientacion;
         private double _minX;
         private double _minY;
         private double _maxX;
         private double _maxY;
+        private int kSUPERFICIE_1_VENTOSA = 50; // TODO: determinar en funcion del tamaño
+        private int kSUPERFICIE_2_VENTOSA = 60;
+        private int kSUPERFICIE_3_VENTOSA = 70;
 
         /// <summary>
         /// Coordenada X
         /// </summary>
-        public double X { get { return _x; } set { _x = value; CalcularMinMax(); } }
+        public int X { get { return _x; } set { _x = value; CalcularMinMax(); } }
         /// <summary>
         /// Coordenada Y
         /// </summary>
-        public double Y { get { return _y; } set { _y = value; CalcularMinMax(); } }
+        public int Y { get { return _y; } set { _y = value; CalcularMinMax(); } }
         /// <summary>
         /// Ancho (eje X)
         /// </summary>
-        public double Ancho { get; set; }
+        public int Ancho { get; set; }
         /// <summary>
         /// Largo (eje Y)
         /// </summary>
-        public double Largo { get; set; }
+        public int Largo { get; set; }
         /// <summary>
         /// Alto (eje Z)
         /// </summary>
-        public double Alto { get; set; }
+        public int Alto { get; set; }
         /// <summary>Orientación (en grados) de la pieza en el eje X</summary>
-        public double Orientacion { get { return _orientacion; } set { _orientacion = value; CalcularMinMax();  } }
+        public int Orientacion { get { return _orientacion; } set { _orientacion = value; CalcularMinMax();  } }
         internal double MinX { get { return _minX; } }
         internal double MaxX { get { return _maxX; } }
         internal double MinY { get { return _minY; } }
         internal double MaxY { get { return _maxY; } }
+        internal int Area { get
+            {
+                int area = Ancho * Largo;
+                if (area <= kSUPERFICIE_1_VENTOSA) return 1;
+                else if (area <= kSUPERFICIE_2_VENTOSA) return 2;
+                else if (area <= kSUPERFICIE_3_VENTOSA) return 3;
+                else return 4;
+            } }
 
         /// <summary>
         /// Constructor de pieza.
@@ -55,7 +66,7 @@ namespace BibliotecaPiezas {
         /// <param name="alto"></param>
         /// <param name="largo"></param>
         /// <param name="Orientacion"></param>
-        internal Pieza (double x, double y, double ancho, double alto, double largo, double Orientacion)
+        internal Pieza (int x, int y, int ancho, int alto, int largo, int Orientacion)
         {
             _x = x;
             _y = y;
@@ -166,12 +177,12 @@ namespace BibliotecaPiezas {
         /// <param name="xmlPieza">Nodo con la informacion de la pieza</param>
         internal void RecuperarXml(XmlNode xmlPieza)
         {
-            X = Double.Parse(xmlPieza["x"].InnerText);
-            Y = Double.Parse(xmlPieza["x"].InnerText);
-            Ancho = Double.Parse(xmlPieza["ancho"].InnerText);
-            Alto = Double.Parse(xmlPieza["alto"].InnerText);
-            Largo = Double.Parse(xmlPieza["largo"].InnerText);
-            Orientacion = Double.Parse(xmlPieza["orientacion"].InnerText);
+            X = int.Parse(xmlPieza["x"].InnerText);
+            Y = int.Parse(xmlPieza["x"].InnerText);
+            Ancho = int.Parse(xmlPieza["ancho"].InnerText);
+            Alto = int.Parse(xmlPieza["alto"].InnerText);
+            Largo = int.Parse(xmlPieza["largo"].InnerText);
+            Orientacion = int.Parse(xmlPieza["orientacion"].InnerText);
         }
     }
 }

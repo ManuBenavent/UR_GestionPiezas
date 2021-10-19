@@ -10,11 +10,13 @@ namespace BibliotecaPiezas
     public class Tablero
     {
         private List<Pieza> piezas;
-        private const int MIN_ALTO = 2;
+        // Medidas en MM
+        private const int MIN_ALTO = 5;
+        private const int MAX_ALTO = 60; // Maximo valor soportado para evitar overflow, si se modifica hay que modificar la clase ExtraerPieza
+        // TODO: ajustar ancho y largo en funcion del tablero y el alcance
         private const int MIN_ANCHO = 2;
-        private const int MIN_LARGO = 2;
-        private const int MAX_ALTO = 20;
         private const int MAX_ANCHO = 20;
+        private const int MIN_LARGO = 2;
         private const int MAX_LARGO = 20;
         private const int MIN_X = 0;
         private const int MIN_Y = 0;
@@ -136,6 +138,15 @@ namespace BibliotecaPiezas
             {
                 Console.WriteLine(e.Message);
                 return false;
+            }
+        }
+
+        public void ExtraerPiezas()
+        {
+            List<int> ids = ExtraerPieza.BestSolution(piezas);
+            foreach (int id in ids)
+            {
+                Console.WriteLine(id + ": " + piezas[id].Area);
             }
         }
     }
