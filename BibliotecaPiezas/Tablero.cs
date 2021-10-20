@@ -71,7 +71,7 @@ namespace BibliotecaPiezas
         /// </summary>
         /// <param name="ruta">Ruta donde deseamos guardar el tablero, default: cadena vacia.</param>
         /// <returns></returns>
-        public bool GuardarTablero(String ruta="")
+        public bool GuardarTablero(String ruta="tablero.xml")
         {
             try
             {
@@ -90,7 +90,7 @@ namespace BibliotecaPiezas
                     Indent = true
                 };
                 // Guardamos el documento en un fichero con auto indentado
-                XmlWriter writer = XmlWriter.Create(ruta + "tablero.xml", settings);
+                XmlWriter writer = XmlWriter.Create(ruta, settings);
                 doc.Save(writer);
                 writer.Close();
                 return true;
@@ -137,6 +137,7 @@ namespace BibliotecaPiezas
             } catch (XmlException e)
             {
                 Console.WriteLine(e.Message);
+                piezas.Clear(); // Eliminamos si se ha creado alguna pieza
                 return false;
             }
         }

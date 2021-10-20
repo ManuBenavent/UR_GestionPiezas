@@ -49,15 +49,8 @@ namespace BibliotecaPiezas
             long res;
             if (n - sizes[iterator - 1] >= 0)
             {
-                if(values[iterator - 1] == 36028797018963968)
-                {
-                    Console.WriteLine(BestRecursive(iterator - 1, n - sizes[iterator - 1]) + values[iterator - 1]);
-                    Console.WriteLine(BestRecursive(iterator - 1, n));
-                }
-
                 res = Math.Max(BestRecursive(iterator - 1, n - sizes[iterator - 1]) + values[iterator - 1], BestRecursive(iterator - 1, n));
             }
-                //res = Math.Max(BestRecursive(iterator - 1, n - sizes[iterator - 1]) + values[iterator - 1], BestRecursive(iterator - 1, n));
             else res = BestRecursive(iterator - 1, n);
             almacen.Add(key, res);
             return res;

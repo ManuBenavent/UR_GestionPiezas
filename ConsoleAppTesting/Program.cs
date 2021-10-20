@@ -11,10 +11,15 @@ namespace ConsoleAppTesting
         static void Main(string[] args)
         {
             Tablero t = new Tablero();
+            while (true)
+            {
+                t.GenerarPiezas(1);
+                t.ExtraerPiezas();
+            }
             //t.GenerarPiezas(9);
             //t.GuardarTablero();
-            t.RecuperarTablero("tablero.xml");
-            t.ExtraerPiezas();
+            //t.RecuperarTablero("tablero.xml");
+            //t.ExtraerPiezas();
         }
     }
 }
