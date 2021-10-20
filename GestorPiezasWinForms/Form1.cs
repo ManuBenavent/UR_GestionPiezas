@@ -194,10 +194,19 @@ namespace GestorPiezasWinForms
 
         private void piezasToRoboDK_Click(object sender, EventArgs e)
         {
-            RoboDK.Item item = RDK.AddFile(@"D:\Programs\Universidad\RoboDK\Library\box.sld"); //TODO: incluir una ruta mas adecuada
-            double[] scale = new double[3] { 3, 20, 1 };
-            
+            RoboDK.Item frame = RDK.AddFrame("MyFrame");
+            RoboDK.Item item = RDK.AddFile(@"D:\Programs\Universidad\RoboDK\Library\box.sld", frame); //TODO: incluir una ruta mas adecuada
+            double[] scale = new double[3] { 1,1,1 };
             item.Scale(scale);
+            Mat pose = Mat.transl(3.0, 3.0, 1);
+            item.setPose(pose);
+
+
+            item = RDK.AddFile(@"D:\Programs\Universidad\RoboDK\Library\box.sld", frame); //TODO: incluir una ruta mas adecuada
+            scale = new double[3] { 1,1,1 };
+            item.Scale(scale);
+            pose = Mat.transl(50, 50, 1);
+            item.setPose(pose);
             if (item.Valid())
             {
                 notifybar.Text = "Loaded: " + item.Name();
@@ -212,10 +221,26 @@ namespace GestorPiezasWinForms
         {
             if (!Check_RDK()) { return; }
             // Force to stop and close RoboDK (optional)
-            // RDK.CloseAllStations(); // close all stations
+            //RDK.CloseAllStations(); // close all stations
             // RDK.Save("path_to_save.rdk"); // save the project if desired
+            CloseAllStations();
             RDK.CloseRoboDK();
             RDK = null;
+        }
+
+        /// <summary>
+        /// Close all the stations available in RoboDK (top level items)
+        /// </summary>
+        public void CloseAllStations()
+        {
+            // Get all the RoboDK stations available
+            RoboDK.Item[] all_stations = RDK.getItemList(RoboDK.ITEM_TYPE_STATION);
+            foreach (RoboDK.Item station in all_stations)
+            {
+                notifybar.Text = "Closing " + station.Name();
+                // this will close a station without asking to save:
+                station.Delete();
+            }
         }
     }
 }
