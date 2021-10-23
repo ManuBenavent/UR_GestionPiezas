@@ -59,6 +59,7 @@ namespace BibliotecaPiezas {
             } }
         public bool EnSimulador { get; set; }
         public RoboDK.Item Item { get; set; }
+        public int ID { get; set; }
 
         /// <summary>
         /// Constructor de pieza.
@@ -69,7 +70,7 @@ namespace BibliotecaPiezas {
         /// <param name="alto"></param>
         /// <param name="largo"></param>
         /// <param name="Orientacion"></param>
-        internal Pieza (int x, int y, int ancho, int alto, int largo, int Orientacion)
+        internal Pieza (int x, int y, int ancho, int alto, int largo, int Orientacion, int ID)
         {
             _x = x;
             _y = y;
@@ -80,12 +81,13 @@ namespace BibliotecaPiezas {
             CalcularMinMax();
             Item = null;
             EnSimulador = false;
+            this.ID = ID;
         }
 
         /// <summary>
         /// Constructor de pieza. Utilizado unicamente al recupear piezas de un Xml
         /// </summary>
-        internal Pieza()
+        internal Pieza(int ID)
         {
             _x = 0;
             _y = 0;
@@ -93,6 +95,10 @@ namespace BibliotecaPiezas {
             Alto = 0;
             Largo = 0;
             _orientacion = 0;
+            this.ID = ID;
+            Item = null;
+            EnSimulador = false;
+            CalcularMinMax();
         }
 
 
@@ -189,6 +195,29 @@ namespace BibliotecaPiezas {
             Alto = int.Parse(xmlPieza["alto"].InnerText);
             Largo = int.Parse(xmlPieza["largo"].InnerText);
             Orientacion = int.Parse(xmlPieza["orientacion"].InnerText);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Pieza pieza &&
+                   _x == pieza._x &&
+                   _y == pieza._y &&
+                   _orientacion == pieza._orientacion &&
+                   Ancho == pieza.Ancho &&
+                   Largo == pieza.Largo &&
+                   Alto == pieza.Alto;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = -368877013;
+            hashCode = hashCode * -1521134295 + _x.GetHashCode();
+            hashCode = hashCode * -1521134295 + _y.GetHashCode();
+            hashCode = hashCode * -1521134295 + _orientacion.GetHashCode();
+            hashCode = hashCode * -1521134295 + Ancho.GetHashCode();
+            hashCode = hashCode * -1521134295 + Largo.GetHashCode();
+            hashCode = hashCode * -1521134295 + Alto.GetHashCode();
+            return hashCode;
         }
     }
 }

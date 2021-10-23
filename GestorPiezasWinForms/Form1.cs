@@ -104,10 +104,17 @@ namespace GestorPiezasWinForms
 
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                foreach (Pieza p in tablero.Piezas)
+                {
+                    if (p.EnSimulador)
+                        p.Item.Delete();
+                }
+                tablero.Piezas.Clear();
                 if (!tablero.RecuperarTablero(openFileDialog.FileName))
                 {
                     Interaction.MsgBox("Se ha producido un error al intentar cargar el tablero", MsgBoxStyle.Critical, Title: "Guardar tablero");
                 }
+                UpdateLista();
             }
         }
 

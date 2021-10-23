@@ -25,10 +25,12 @@ namespace BibliotecaPiezas
         private const int MAX_X = 280;
         private const int MAX_Y = 280;
         private const int MAX_ORIENTACION = 180;
+        private static int ID_PIEZA;
 
         public Tablero()
         {
             Piezas = new List<Pieza>();
+            ID_PIEZA = 1;
         }
 
         /// <summary>
@@ -44,8 +46,9 @@ namespace BibliotecaPiezas
                 Pieza p;
                 do
                 {
-                    p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), rnd.Next(MIN_ANCHO, MAX_ANCHO), rnd.Next(MIN_ALTO, MAX_ALTO), rnd.Next(MIN_LARGO, MAX_LARGO), rnd.Next(MAX_ORIENTACION));
+                    p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), rnd.Next(MIN_ANCHO, MAX_ANCHO), rnd.Next(MIN_ALTO, MAX_ALTO), rnd.Next(MIN_LARGO, MAX_LARGO), rnd.Next(MAX_ORIENTACION), ID_PIEZA);
                 } while (ColisionaTablero(p));
+                ID_PIEZA++;
                 Piezas.Add(p);
             }
             Console.WriteLine("Piezas generadas");
@@ -129,9 +132,11 @@ namespace BibliotecaPiezas
 
                 // Obtenemos informacion Piezas
                 nodeList = root.SelectNodes("pieza");
+                ID_PIEZA = 1;
                 foreach (XmlNode piezaXml in nodeList)
                 {
-                    Pieza pieza = new Pieza();
+                    Pieza pieza = new Pieza(ID_PIEZA);
+                    ID_PIEZA++;
                     pieza.RecuperarXml(piezaXml);
                     Piezas.Add(pieza);
                 }
@@ -170,7 +175,7 @@ namespace BibliotecaPiezas
             Mat rot = Mat.rotz((Math.PI / 180) * p.Orientacion);
             Mat pose = Mat.transl(p.X, p.Y, 0)*rot;
             item.setPose(pose);
-            // TODO: falta rotacion
+            item.setName("pieza_" + p.ID);
             p.EnSimulador = true;
             p.Item = item;
         }

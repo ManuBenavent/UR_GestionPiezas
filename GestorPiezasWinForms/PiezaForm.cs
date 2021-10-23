@@ -39,7 +39,7 @@ namespace GestorPiezasWinForms
             textBox_Orientacion.Text = pieza.Orientacion.ToString();
             if (pieza.EnSimulador)
             {
-                label7.Text = "En tablero";
+                label7.Text = "Creada ID: " + pieza.ID;
                 textBox_X.Enabled = false;
                 textBox_Y.Enabled = false;
                 textBox_Ancho.Enabled = false;
@@ -47,7 +47,7 @@ namespace GestorPiezasWinForms
                 textBox_Largo.Enabled = false;
                 textBox_Orientacion.Enabled = false;
                 button1.Enabled = false;
-                button2.Text = "Retirar del tablero";
+                button2.Text = "Quitar del tablero";
             }
         }
 
@@ -89,6 +89,16 @@ namespace GestorPiezasWinForms
             {
                 tablero.PiezaToRoboDK(ref_frame, RDK, pieza);
             }
+            formSender.UpdateLista();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (pieza.EnSimulador)
+            {
+                pieza.Item.Delete();
+            }
+            tablero.Piezas.Remove(pieza);
             formSender.UpdateLista();
         }
     }
