@@ -59,10 +59,19 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="PiezaForm.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PiezaForm.Designer.cs">
+      <DependentUpon>PiezaForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PiezaForm.resx">
+      <DependentUpon>PiezaForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -88,10 +97,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Downloads\Example\RoboDKSampleProject\RoboDKFlatApiWinformsApplication.csproj">
-      <Project>{BF3E6EFA-6CB0-49EF-BCA4-7BFA8BC1460B}</Project>
-      <Name>RoboDKFlatApiWinformsApplication</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BibliotecaPiezas\BibliotecaPiezas.csproj">
       <Project>{4c8d74be-d4e5-4cee-9172-5f5763116d59}</Project>
       <Name>BibliotecaPiezas</Name>

@@ -4,29 +4,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using RoboDk.API;
+
 
 namespace BibliotecaPiezas
 {
     public class Tablero
     {
-        private List<Pieza> piezas;
+        public List<Pieza> Piezas { get; }
         // Medidas en MM
-        private const int MIN_ALTO = 5;
-        private const int MAX_ALTO = 60; // Maximo valor soportado para evitar overflow, si se modifica hay que modificar la clase ExtraerPieza
+        private const int MIN_ALTO = 1;
+        private const int MAX_ALTO = 3; // Maximo valor soportado para evitar overflow, si se modifica hay que modificar la clase ExtraerPieza
         // TODO: ajustar ancho y largo en funcion del tablero y el alcance
-        private const int MIN_ANCHO = 2;
-        private const int MAX_ANCHO = 20;
-        private const int MIN_LARGO = 2;
-        private const int MAX_LARGO = 20;
-        private const int MIN_X = 0;
-        private const int MIN_Y = 0;
-        private const int MAX_X = 30;
-        private const int MAX_Y = 30;
+        private const int MIN_ANCHO = 1;
+        private const int MAX_ANCHO = 3;
+        private const int MIN_LARGO = 1;
+        private const int MAX_LARGO = 3;
+        private const int MIN_X = 150;
+        private const int MIN_Y = -280;
+        private const int MAX_X = 280;
+        private const int MAX_Y = 280;
         private const int MAX_ORIENTACION = 180;
 
         public Tablero()
         {
-            piezas = new List<Pieza>();
+            Piezas = new List<Pieza>();
         }
 
         /// <summary>
@@ -44,7 +46,7 @@ namespace BibliotecaPiezas
                 {
                     p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), rnd.Next(MIN_ANCHO, MAX_ANCHO), rnd.Next(MIN_ALTO, MAX_ALTO), rnd.Next(MIN_LARGO, MAX_LARGO), rnd.Next(MAX_ORIENTACION));
                 } while (ColisionaTablero(p));
-                piezas.Add(p);
+                Piezas.Add(p);
             }
             Console.WriteLine("Piezas generadas");
         }
@@ -56,7 +58,7 @@ namespace BibliotecaPiezas
         /// <returns></returns>
         private bool ColisionaTablero(Pieza pieza)
         {
-            foreach(Pieza p in piezas){
+            foreach(Pieza p in Piezas){
                 if (p.Colisiona(pieza) || pieza.Colisiona(p)) // La pieza nueva no debe colisionar con las anteriores && las anteriores no deben colisionar con la nueva (significa que las estaría enmarcando)
                 {
                     Console.WriteLine("Colision producida.");
@@ -79,8 +81,8 @@ namespace BibliotecaPiezas
                 XmlDocument doc = new XmlDocument();
                 doc.LoadXml("<tablero></tablero>");
 
-                // Añadimos las piezas
-                foreach (Pieza p in piezas)
+                // Añadimos las Piezas
+                foreach (Pieza p in Piezas)
                 {
                     p.GuardarXml(doc);   
                 }
@@ -110,7 +112,7 @@ namespace BibliotecaPiezas
         {
             try
             {
-                piezas.Clear();
+                Piezas.Clear();
                 XmlDocument doc = new XmlDocument();
                 try
                 {
@@ -125,30 +127,51 @@ namespace BibliotecaPiezas
                 XmlNodeList nodeList;
                 XmlNode root = doc.DocumentElement;
 
-                // Obtenemos informacion piezas
+                // Obtenemos informacion Piezas
                 nodeList = root.SelectNodes("pieza");
                 foreach (XmlNode piezaXml in nodeList)
                 {
                     Pieza pieza = new Pieza();
                     pieza.RecuperarXml(piezaXml);
-                    piezas.Add(pieza);
+                    Piezas.Add(pieza);
                 }
                 return true;
             } catch (XmlException e)
             {
                 Console.WriteLine(e.Message);
-                piezas.Clear(); // Eliminamos si se ha creado alguna pieza
+                Piezas.Clear(); // Eliminamos si se ha creado alguna pieza
                 return false;
             }
         }
 
         public void ExtraerPiezas()
         {
-            List<int> ids = ExtraerPieza.BestSolution(piezas);
+            List<int> ids = ExtraerPieza.BestSolution(Piezas);
             foreach (int id in ids)
             {
-                Console.WriteLine(id + ": " + piezas[id].Area);
+                Console.WriteLine(id + ": " + Piezas[id].Area);
             }
+        }
+
+        public void TableroToRoboDK (RoboDK.Item ref_frame, RoboDK RDK)
+        {
+            foreach (Pieza p in Piezas)
+            {
+                if (!p.EnSimulador)
+                    PiezaToRoboDK(ref_frame, RDK, p);
+            }
+        }
+
+        public void PiezaToRoboDK (RoboDK.Item ref_frame, RoboDK RDK, Pieza p)
+        {
+            RoboDK.Item item = RDK.AddFile(@"C:\Users\mbena\Downloads\pieza.stl", ref_frame); //TODO: incluir una ruta mas adecuada
+            double[] scale = new double[3] { p.Ancho, p.Largo, p.Alto };
+            item.Scale(scale);
+            Mat pose = Mat.transl(p.X, p.Y, 0);
+            item.setPose(pose);
+            // TODO: falta rotacion
+            p.EnSimulador = true;
+            p.Item = item;
         }
     }
 }

@@ -56,6 +56,8 @@ namespace BibliotecaPiezas {
                 else if (area <= kSUPERFICIE_3_VENTOSA) return 3;
                 else return 4;
             } }
+        public bool EnSimulador { get; set; }
+        public RoboDK.Item Item { get; set; }
 
         /// <summary>
         /// Constructor de pieza.
@@ -75,6 +77,8 @@ namespace BibliotecaPiezas {
             Largo = largo;
             _orientacion = Orientacion;
             CalcularMinMax();
+            Item = null;
+            EnSimulador = false;
         }
 
         /// <summary>

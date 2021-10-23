@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using BibliotecaPiezas;
 using Microsoft.VisualBasic;
 using RoboDk.API;
+using RoboDk.API.Model;
 
 namespace GestorPiezasWinForms
 {
@@ -23,9 +24,15 @@ namespace GestorPiezasWinForms
 
         // Keep the ROBOT item as a global variable
         RoboDK.Item ROBOT = null;
+        RoboDK.Item ROBOT_BASE = null;
 
         // Define if the robot movements will be blocking
         const bool MOVE_BLOCKING = false;
+
+        // Cajas destino
+        RoboDK.Item CAJA1 = null;
+        RoboDK.Item CAJA2 = null;
+        RoboDK.Item CAJA3 = null;
 
         public Form1()
         {
@@ -55,7 +62,8 @@ namespace GestorPiezasWinForms
                     Interaction.MsgBox("El valor debe ser un número entero.", MsgBoxStyle.Critical, Title: "Generación de piezas");
                 }
             } while (parsed_val == -1);
-            tablero.GenerarPiezas(9);
+            tablero.GenerarPiezas(parsed_val);
+            UpdateLista();
         }
 
         // Guardar tablero
@@ -119,6 +127,25 @@ namespace GestorPiezasWinForms
 
                     // attempt to auto select the robot:
                     //SelectRobot();
+                    ROBOT = RDK.AddFile(@"C:\Users\mbena\Downloads\UR3.robot");
+                    ROBOT_BASE = RDK.getItem("UR3 Base");
+                    CAJA1 = RDK.AddFile(@"C:\Users\mbena\Downloads\Box.stl", ROBOT_BASE);
+                    CAJA1.setName("CajaDestino1");
+                    Mat pose = Mat.transl(-150, -300, 0);
+                    CAJA1.setPose(pose);
+                    CAJA1.Scale(5);
+
+                    CAJA2 = RDK.AddFile(@"C:\Users\mbena\Downloads\Box.stl", ROBOT_BASE);
+                    CAJA2.setName("CajaDestino2");
+                    pose = Mat.transl(-330, 0, 0);
+                    CAJA2.setPose(pose);
+                    CAJA2.Scale(5);
+
+                    CAJA3 = RDK.AddFile(@"C:\Users\mbena\Downloads\Box.stl", ROBOT_BASE);
+                    CAJA3.setName("CajaDestino2");
+                    pose = Mat.transl(-150, 300, 0);
+                    CAJA3.setPose(pose);
+                    CAJA3.Scale(5);
                 }
 
                 // display RoboDK by default:
@@ -194,27 +221,10 @@ namespace GestorPiezasWinForms
 
         private void piezasToRoboDK_Click(object sender, EventArgs e)
         {
-            RoboDK.Item frame = RDK.AddFrame("MyFrame");
-            RoboDK.Item item = RDK.AddFile(@"D:\Programs\Universidad\RoboDK\Library\box.sld", frame); //TODO: incluir una ruta mas adecuada
-            double[] scale = new double[3] { 1,1,1 };
-            item.Scale(scale);
-            Mat pose = Mat.transl(3.0, 3.0, 1);
-            item.setPose(pose);
-
-
-            item = RDK.AddFile(@"D:\Programs\Universidad\RoboDK\Library\box.sld", frame); //TODO: incluir una ruta mas adecuada
-            scale = new double[3] { 1,1,1 };
-            item.Scale(scale);
-            pose = Mat.transl(50, 50, 1);
-            item.setPose(pose);
-            if (item.Valid())
-            {
-                notifybar.Text = "Loaded: " + item.Name();
-            }
-            else
-            {
-                notifybar.Text = "Could not load a box";
-            }
+            notifybar.Text = "Cargando piezas";
+            tablero.TableroToRoboDK(ROBOT_BASE, RDK);
+            notifybar.Text = "Piezas cargadas";
+            UpdateLista();
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -240,6 +250,19 @@ namespace GestorPiezasWinForms
                 notifybar.Text = "Closing " + station.Name();
                 // this will close a station without asking to save:
                 station.Delete();
+            }
+        }
+
+        public void UpdateLista()
+        {
+            int i = 0;
+            panelPiezas.Controls.Clear();
+            foreach (Pieza p in tablero.Piezas)
+            {
+                PiezaForm piezaForm = new PiezaForm(tablero, p, ROBOT_BASE, RDK, this);
+                piezaForm.Location = new Point(0, i*60);
+                panelPiezas.Controls.Add(piezaForm);
+                i++;
             }
         }
     }
