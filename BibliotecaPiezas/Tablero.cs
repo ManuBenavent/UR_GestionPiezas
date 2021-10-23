@@ -12,14 +12,8 @@ namespace BibliotecaPiezas
     public class Tablero
     {
         public List<Pieza> Piezas { get; }
-        // Medidas en MM
-        private const int MIN_ALTO = 1;
-        private const int MAX_ALTO = 3; // Maximo valor soportado para evitar overflow, si se modifica hay que modificar la clase ExtraerPieza
-        // TODO: ajustar ancho y largo en funcion del tablero y el alcance
-        private const int MIN_ANCHO = 1;
-        private const int MAX_ANCHO = 3;
-        private const int MIN_LARGO = 1;
-        private const int MAX_LARGO = 3;
+        private const int MIN_LADO = 20;
+        private const int MAX_LADO = 40;
         private const int MIN_X = -280;
         private const int MIN_Y = 150;
         private const int MAX_X = 280;
@@ -37,21 +31,30 @@ namespace BibliotecaPiezas
         /// Genera tantas piezas como indica el parámetro sin que colisionen entre sí de tamaño variable.
         /// </summary>
         /// <param name="n">Número de piezas.</param>
-        public void GenerarPiezas (int n)
+        public bool GenerarPiezas (int n)
         {
-            System.Console.WriteLine("Generando piezas");
+            Console.WriteLine("Generando piezas");
             Random rnd = new Random();
+            int intentos = 0;
+            List<Pieza> nuevas = new List<Pieza>();
             for (int i = 0; i < n; i++)
             {
                 Pieza p;
+                intentos = 0;
                 do
                 {
-                    p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), rnd.Next(MIN_ANCHO, MAX_ANCHO), rnd.Next(MIN_ALTO, MAX_ALTO), rnd.Next(MIN_LARGO, MAX_LARGO), rnd.Next(MAX_ORIENTACION), ID_PIEZA);
-                } while (ColisionaTablero(p));
+                    p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MAX_ORIENTACION), ID_PIEZA);
+                    //p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y),50, 50, 50, 0, ID_PIEZA);
+                    intentos++;
+                    if (intentos > 20)
+                        return false;
+                } while (ColisionaTablero(p, nuevas));
                 ID_PIEZA++;
-                Piezas.Add(p);
+                nuevas.Add(p);
             }
+            Piezas.AddRange(nuevas);
             Console.WriteLine("Piezas generadas");
+            return true;
         }
 
         /// <summary>
@@ -59,10 +62,14 @@ namespace BibliotecaPiezas
         /// </summary>
         /// <param name="pieza">Pieza que queremos comprobar</param>
         /// <returns></returns>
-        private bool ColisionaTablero(Pieza pieza)
+        internal bool ColisionaTablero(Pieza pieza, List<Pieza> nuevas)
         {
-            foreach(Pieza p in Piezas){
-                if (p.Colisiona(pieza) || pieza.Colisiona(p)) // La pieza nueva no debe colisionar con las anteriores && las anteriores no deben colisionar con la nueva (significa que las estaría enmarcando)
+            List<Pieza> piezas_total = new List<Pieza>();
+            piezas_total.AddRange(Piezas);
+            piezas_total.AddRange(nuevas);
+            foreach (Pieza p in piezas_total)
+            {
+                if (p.Colisiona(pieza) || pieza.Colisiona(p))
                 {
                     Console.WriteLine("Colision producida.");
                     return true;
@@ -169,8 +176,8 @@ namespace BibliotecaPiezas
 
         public void PiezaToRoboDK (RoboDK.Item ref_frame, RoboDK RDK, Pieza p)
         {
-            RoboDK.Item item = RDK.AddFile(@"C:\Users\mbena\Downloads\pieza.stl", ref_frame); //TODO: incluir una ruta mas adecuada
-            double[] scale = new double[3] { p.Ancho, p.Largo, p.Alto };
+            RoboDK.Item item = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\pieza.stl", ref_frame); //TODO: incluir una ruta mas adecuada
+            double[] scale = new double[3] { p.Ancho/2, p.Largo/2, p.Alto/2 };
             item.Scale(scale);
             Mat rot = Mat.rotz((Math.PI / 180) * p.Orientacion);
             Mat pose = Mat.transl(p.X, p.Y, 0)*rot;

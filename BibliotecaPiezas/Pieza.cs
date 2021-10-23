@@ -11,44 +11,31 @@ namespace BibliotecaPiezas {
     /// </summary>
     public class Pieza
     {
-        private const int SEPARACION = 10;
-        private int _x;
-        private int _y;
-        private int _orientacion;
-        private double _minX;
-        private double _minY;
-        private double _maxX;
-        private double _maxY;
-        private int kSUPERFICIE_1_VENTOSA = 50; // TODO: determinar en funcion del tamaño
-        private int kSUPERFICIE_2_VENTOSA = 60;
-        private int kSUPERFICIE_3_VENTOSA = 70;
-
-        /// <summary>
-        /// Coordenada X
-        /// </summary>
-        public int X { get { return _x; } set { _x = value; CalcularMinMax(); } }
-        /// <summary>
-        /// Coordenada Y
-        /// </summary>
-        public int Y { get { return _y; } set { _y = value; CalcularMinMax(); } }
-        /// <summary>
-        /// Ancho (eje X)
-        /// </summary>
+        /// <summary>Coordenada X </summary>
+        public int X { get; set; }
+        /// <summary>Coordenada Y </summary>
+        public int Y { get; set; }
+        /// <summary> Ancho (eje X)</summary>
         public int Ancho { get; set; }
-        /// <summary>
-        /// Largo (eje Y)
-        /// </summary>
+        /// <summary>Largo (eje Y)</summary>
         public int Largo { get; set; }
-        /// <summary>
-        /// Alto (eje Z)
-        /// </summary>
+        /// <summary> Alto (eje Z)</summary>
         public int Alto { get; set; }
         /// <summary>Orientación (en grados) de la pieza en el eje X</summary>
-        public int Orientacion { get { return _orientacion; } set { _orientacion = value; CalcularMinMax();  } }
-        internal double MinX { get { return _minX; } }
-        internal double MaxX { get { return _maxX; } }
-        internal double MinY { get { return _minY; } }
-        internal double MaxY { get { return _maxY; } }
+        public int Orientacion { get; set; }
+        /// <summary>Determina si la pieza se ha cargado en RoboDK</summary>
+        public bool EnSimulador { get; set; }
+        /// <summary>Referencia al item que representa la pieza en RoboDK</summary>
+        public RoboDK.Item Item { get; set; }
+        ///<summary>ID de la pieza</summary>
+        public int ID { get; set; }
+        private int Radio { get { return Math.Max(Ancho, Largo) + 10; } }
+
+
+        private const int kSUPERFICIE_1_VENTOSA = 50; // TODO: determinar en funcion del tamaño
+        private const int kSUPERFICIE_2_VENTOSA = 60;
+        private const int kSUPERFICIE_3_VENTOSA = 70;
+        /// <summary>Determina el numero de ventosas que se necesitan para la pieza</summary>
         internal int Area { get
             {
                 int area = Ancho * Largo;
@@ -57,9 +44,9 @@ namespace BibliotecaPiezas {
                 else if (area <= kSUPERFICIE_3_VENTOSA) return 3;
                 else return 4;
             } }
-        public bool EnSimulador { get; set; }
-        public RoboDK.Item Item { get; set; }
-        public int ID { get; set; }
+        
+        
+
 
         /// <summary>
         /// Constructor de pieza.
@@ -70,15 +57,14 @@ namespace BibliotecaPiezas {
         /// <param name="alto"></param>
         /// <param name="largo"></param>
         /// <param name="Orientacion"></param>
-        internal Pieza (int x, int y, int ancho, int alto, int largo, int Orientacion, int ID)
+        internal Pieza (int x, int y, int ancho, int alto, int largo, int orientacion, int ID)
         {
-            _x = x;
-            _y = y;
+            X = x;
+            Y = y;
             Ancho = ancho;
             Alto = alto;
             Largo = largo;
-            _orientacion = Orientacion;
-            CalcularMinMax();
+            Orientacion = orientacion;
             Item = null;
             EnSimulador = false;
             this.ID = ID;
@@ -89,70 +75,25 @@ namespace BibliotecaPiezas {
         /// </summary>
         internal Pieza(int ID)
         {
-            _x = 0;
-            _y = 0;
+            X = 0;
+            Y = 0;
             Ancho = 0;
             Alto = 0;
             Largo = 0;
-            _orientacion = 0;
+            Orientacion = 0;
             this.ID = ID;
             Item = null;
             EnSimulador = false;
-            CalcularMinMax();
-        }
-
-
-        /// <summary>
-        /// Calculamos MinX, MaxX, MinY, MaxY para crear "bounding boxes" que enmarquen las piezas rotadas y evitar colisiones
-        /// </summary>
-        private void CalcularMinMax()
-        {
-            _minX = Math.Min(X * Math.Cos(Orientacion) + Y * Math.Sin(Orientacion), (X + Ancho) * Math.Cos(Orientacion) + Y * Math.Sin(Orientacion)); // InfIzq vs InfDer
-            _minX = Math.Min(MinX, X * Math.Cos(Orientacion) + (Y + Largo) * Math.Sin(Orientacion)); // vs SupIzq
-            _minX = Math.Min(MinX, (X + Ancho) * Math.Cos(Orientacion) + (Y + Largo) * Math.Sin(Orientacion)); // vs SupDer
-            _minX -= SEPARACION;
-            _maxX = Math.Max(X * Math.Cos(Orientacion) + Y * Math.Sin(Orientacion), (X + Ancho) * Math.Cos(Orientacion) + Y * Math.Sin(Orientacion)); // InfIzq vs InfDer
-            _maxX = Math.Max(MaxX, X * Math.Cos(Orientacion) + (Y + Largo) * Math.Sin(Orientacion)); // vs SupIzq
-            _maxX = Math.Max(MaxX, (X + Ancho) * Math.Cos(Orientacion) + (Y + Largo) * Math.Sin(Orientacion)); // vs SupDer
-            _maxX += SEPARACION;
-            _minY = Math.Min(Y * Math.Cos(Orientacion) - X * Math.Sin(Orientacion), Y * Math.Cos(Orientacion) - (X + Ancho) * Math.Sin(Orientacion)); // InfIzq vs InfDer
-            _minY = Math.Min(MinY, (Y + Largo) * Math.Cos(Orientacion) - X * Math.Sin(Orientacion)); // vs SupIzq
-            _minY = Math.Min(MinY, (Y + Largo) * Math.Cos(Orientacion) - (X + Ancho) * Math.Sin(Orientacion)); // vs SupDer
-            _minY -= SEPARACION;
-            _maxY = Math.Max(Y * Math.Cos(Orientacion) - X * Math.Sin(Orientacion), Y * Math.Cos(Orientacion) - (X + Ancho) * Math.Sin(Orientacion)); // InfIzq vs InfDer
-            _maxY = Math.Max(MaxY, (Y + Largo) * Math.Cos(Orientacion) - X * Math.Sin(Orientacion)); // vs SupIzq
-            _maxY = Math.Max(MaxY, (Y + Largo) * Math.Cos(Orientacion) - (X + Ancho) * Math.Sin(Orientacion)); // vs SupDer
-            _maxY += SEPARACION;
         }
 
         /// <summary>
-        /// Comprueba si alguna de las esquinas de la pieza pasada como parametro esta dentro del area simplicada de la pieza objeto.
-        /// El area simplificada consiste en un rectangulo con 0 grados de rotacion que enmarca las 4 esquinas de la pieza.
+        /// Comprueba las colisiones entre dos piezas mediante la distancia euclidea de los centros, esta no debe ser menor al maximo lado (ancho o largo) más una separación X de esta pieza
         /// </summary>
-        /// <param name="pieza">Pieza de la cual se quieren verificar las esquinas.</param>
+        /// <param name="pieza">Pieza de la cual se quieren verificar las colisiones.</param>
         /// <returns>TRUE si colisiona, FALSE si no.</returns>
         internal bool Colisiona (Pieza pieza)
         {
-            // Esquina superior derecha
-            return (pieza.MaxX >= MinX
-                && pieza.MaxX <= MaxX
-                && pieza.MaxY >= MinY
-                && pieza.MaxY <= MaxY)
-                || // Esquina superior izquierda
-                (pieza.MinX >= MinX
-                && pieza.MinX <= MaxX
-                && pieza.MaxY >= MinY
-                && pieza.MaxY <= MaxY)
-                || // Esquina inferior derecha
-                (pieza.MaxX >= MinX
-                && pieza.MaxX <= MaxX
-                && pieza.MinY >= MinY
-                && pieza.MinY <= MaxY)
-                || // Esquina inferior izquierda
-                (pieza.MinX >= MinX
-                && pieza.MinX <= MaxX
-                && pieza.MinY >= MinY
-                && pieza.MinY <= MaxY);
+            return Math.Sqrt(Math.Pow((pieza.X - X), 2) + Math.Pow((pieza.Y - Y), 2)) < Radio;
         }
 
         /// <summary>
@@ -195,29 +136,6 @@ namespace BibliotecaPiezas {
             Alto = int.Parse(xmlPieza["alto"].InnerText);
             Largo = int.Parse(xmlPieza["largo"].InnerText);
             Orientacion = int.Parse(xmlPieza["orientacion"].InnerText);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is Pieza pieza &&
-                   _x == pieza._x &&
-                   _y == pieza._y &&
-                   _orientacion == pieza._orientacion &&
-                   Ancho == pieza.Ancho &&
-                   Largo == pieza.Largo &&
-                   Alto == pieza.Alto;
-        }
-
-        public override int GetHashCode()
-        {
-            int hashCode = -368877013;
-            hashCode = hashCode * -1521134295 + _x.GetHashCode();
-            hashCode = hashCode * -1521134295 + _y.GetHashCode();
-            hashCode = hashCode * -1521134295 + _orientacion.GetHashCode();
-            hashCode = hashCode * -1521134295 + Ancho.GetHashCode();
-            hashCode = hashCode * -1521134295 + Largo.GetHashCode();
-            hashCode = hashCode * -1521134295 + Alto.GetHashCode();
-            return hashCode;
         }
     }
 }

@@ -15,7 +15,6 @@ namespace GestorPiezasWinForms
     {
         Tablero tablero;
         Pieza pieza;
-        Panel panel;
         RoboDK.Item ref_frame;
         RoboDK RDK;
         Form1 formSender;

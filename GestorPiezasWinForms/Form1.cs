@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -62,8 +64,11 @@ namespace GestorPiezasWinForms
                     Interaction.MsgBox("El valor debe ser un número entero.", MsgBoxStyle.Critical, Title: "Generación de piezas");
                 }
             } while (parsed_val == -1);
-            tablero.GenerarPiezas(parsed_val);
-            UpdateLista();
+            if (tablero.GenerarPiezas(parsed_val))
+                UpdateLista();
+            else
+                Interaction.MsgBox("Se han producido demasiadas colisiones, introduce un número menor de piezas.", MsgBoxStyle.Critical, Title: "Generación de piezas");
+
         }
 
         // Guardar tablero
@@ -71,7 +76,7 @@ namespace GestorPiezasWinForms
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog()
             {
-                InitialDirectory = @"C:\",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 CheckFileExists = false,
                 CheckPathExists = true,
                 Title = "Indique ubicación del archivo",
@@ -93,7 +98,7 @@ namespace GestorPiezasWinForms
         {
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
-                InitialDirectory = @"C:\",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 CheckFileExists = true,
                 CheckPathExists = true,
                 Title = "Indique ubicación del archivo",
@@ -131,33 +136,40 @@ namespace GestorPiezasWinForms
                 if (Check_RDK())
                 {
                     notifybar.Text = "RoboDK is Running...";
-
+                    
                     // attempt to auto select the robot:
                     //SelectRobot();
-                    ROBOT = RDK.AddFile(@"C:\Users\mbena\Downloads\UR3.robot");
+                    ROBOT = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\UR3.robot");
                     ROBOT_BASE = RDK.getItem("UR3 Base");
-                    CAJA1 = RDK.AddFile(@"C:\Users\mbena\Downloads\Box.stl", ROBOT_BASE);
+                    CAJA1 = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Box.stl", ROBOT_BASE);
                     CAJA1.setName("CajaDestino1");
                     Mat pose = Mat.transl(-300, -150, 0);
                     CAJA1.setPose(pose);
                     CAJA1.Scale(5);
 
-                    CAJA2 = RDK.AddFile(@"C:\Users\mbena\Downloads\Box.stl", ROBOT_BASE);
+                    CAJA2 = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Box.stl", ROBOT_BASE);
                     CAJA2.setName("CajaDestino2");
                     pose = Mat.transl(0, -330, 0);
                     CAJA2.setPose(pose);
                     CAJA2.Scale(5);
 
-                    CAJA3 = RDK.AddFile(@"C:\Users\mbena\Downloads\Box.stl", ROBOT_BASE);
-                    CAJA3.setName("CajaDestino2");
+                    CAJA3 = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Box.stl", ROBOT_BASE);
+                    CAJA3.setName("CajaDestino3");
                     pose = Mat.transl(300, -150, 0);
                     CAJA3.setPose(pose);
                     CAJA3.Scale(5);
                 }
-
                 // display RoboDK by default:
                 mostrarRoboDK_radioButton.PerformClick();
+                
             }
+
+            string a = "";
+            foreach(String s in System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames())
+            {
+                a += s;
+            }
+            Interaction.MsgBox(Assembly.GetExecutingAssembly().Location, MsgBoxStyle.Critical, Title: "Guardar tablero");
         }
 
         private void mostrarRoboDK_radioButton_CheckedChanged(object sender, EventArgs e)
