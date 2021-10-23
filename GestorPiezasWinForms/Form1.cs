@@ -131,19 +131,19 @@ namespace GestorPiezasWinForms
                     ROBOT_BASE = RDK.getItem("UR3 Base");
                     CAJA1 = RDK.AddFile(@"C:\Users\mbena\Downloads\Box.stl", ROBOT_BASE);
                     CAJA1.setName("CajaDestino1");
-                    Mat pose = Mat.transl(-150, -300, 0);
+                    Mat pose = Mat.transl(-300, -150, 0);
                     CAJA1.setPose(pose);
                     CAJA1.Scale(5);
 
                     CAJA2 = RDK.AddFile(@"C:\Users\mbena\Downloads\Box.stl", ROBOT_BASE);
                     CAJA2.setName("CajaDestino2");
-                    pose = Mat.transl(-330, 0, 0);
+                    pose = Mat.transl(0, -330, 0);
                     CAJA2.setPose(pose);
                     CAJA2.Scale(5);
 
                     CAJA3 = RDK.AddFile(@"C:\Users\mbena\Downloads\Box.stl", ROBOT_BASE);
                     CAJA3.setName("CajaDestino2");
-                    pose = Mat.transl(-150, 300, 0);
+                    pose = Mat.transl(300, -150, 0);
                     CAJA3.setPose(pose);
                     CAJA3.Scale(5);
                 }

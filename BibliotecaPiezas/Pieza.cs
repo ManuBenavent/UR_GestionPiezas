@@ -11,6 +11,7 @@ namespace BibliotecaPiezas {
     /// </summary>
     public class Pieza
     {
+        private const int SEPARACION = 10;
         private int _x;
         private int _y;
         private int _orientacion;
@@ -103,18 +104,19 @@ namespace BibliotecaPiezas {
             _minX = Math.Min(X * Math.Cos(Orientacion) + Y * Math.Sin(Orientacion), (X + Ancho) * Math.Cos(Orientacion) + Y * Math.Sin(Orientacion)); // InfIzq vs InfDer
             _minX = Math.Min(MinX, X * Math.Cos(Orientacion) + (Y + Largo) * Math.Sin(Orientacion)); // vs SupIzq
             _minX = Math.Min(MinX, (X + Ancho) * Math.Cos(Orientacion) + (Y + Largo) * Math.Sin(Orientacion)); // vs SupDer
-
+            _minX -= SEPARACION;
             _maxX = Math.Max(X * Math.Cos(Orientacion) + Y * Math.Sin(Orientacion), (X + Ancho) * Math.Cos(Orientacion) + Y * Math.Sin(Orientacion)); // InfIzq vs InfDer
             _maxX = Math.Max(MaxX, X * Math.Cos(Orientacion) + (Y + Largo) * Math.Sin(Orientacion)); // vs SupIzq
             _maxX = Math.Max(MaxX, (X + Ancho) * Math.Cos(Orientacion) + (Y + Largo) * Math.Sin(Orientacion)); // vs SupDer
-
+            _maxX += SEPARACION;
             _minY = Math.Min(Y * Math.Cos(Orientacion) - X * Math.Sin(Orientacion), Y * Math.Cos(Orientacion) - (X + Ancho) * Math.Sin(Orientacion)); // InfIzq vs InfDer
             _minY = Math.Min(MinY, (Y + Largo) * Math.Cos(Orientacion) - X * Math.Sin(Orientacion)); // vs SupIzq
             _minY = Math.Min(MinY, (Y + Largo) * Math.Cos(Orientacion) - (X + Ancho) * Math.Sin(Orientacion)); // vs SupDer
-
+            _minY -= SEPARACION;
             _maxY = Math.Max(Y * Math.Cos(Orientacion) - X * Math.Sin(Orientacion), Y * Math.Cos(Orientacion) - (X + Ancho) * Math.Sin(Orientacion)); // InfIzq vs InfDer
             _maxY = Math.Max(MaxY, (Y + Largo) * Math.Cos(Orientacion) - X * Math.Sin(Orientacion)); // vs SupIzq
             _maxY = Math.Max(MaxY, (Y + Largo) * Math.Cos(Orientacion) - (X + Ancho) * Math.Sin(Orientacion)); // vs SupDer
+            _maxY += SEPARACION;
         }
 
         /// <summary>

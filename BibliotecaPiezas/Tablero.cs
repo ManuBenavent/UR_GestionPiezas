@@ -20,8 +20,8 @@ namespace BibliotecaPiezas
         private const int MAX_ANCHO = 3;
         private const int MIN_LARGO = 1;
         private const int MAX_LARGO = 3;
-        private const int MIN_X = 150;
-        private const int MIN_Y = -280;
+        private const int MIN_X = -280;
+        private const int MIN_Y = 150;
         private const int MAX_X = 280;
         private const int MAX_Y = 280;
         private const int MAX_ORIENTACION = 180;
@@ -167,7 +167,8 @@ namespace BibliotecaPiezas
             RoboDK.Item item = RDK.AddFile(@"C:\Users\mbena\Downloads\pieza.stl", ref_frame); //TODO: incluir una ruta mas adecuada
             double[] scale = new double[3] { p.Ancho, p.Largo, p.Alto };
             item.Scale(scale);
-            Mat pose = Mat.transl(p.X, p.Y, 0);
+            Mat rot = Mat.rotz((Math.PI / 180) * p.Orientacion);
+            Mat pose = Mat.transl(p.X, p.Y, 0)*rot;
             item.setPose(pose);
             // TODO: falta rotacion
             p.EnSimulador = true;

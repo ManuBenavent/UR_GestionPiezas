@@ -58,6 +58,7 @@ namespace GestorPiezasWinForms
             pieza.Ancho = int.Parse(textBox_Ancho.Text);
             pieza.Alto = int.Parse(textBox_Alto.Text);
             pieza.Largo = int.Parse(textBox_Largo.Text);
+            pieza.Orientacion = int.Parse(textBox_Orientacion.Text);
         }
 
         private void textBox_Validating(object sender, CancelEventArgs e)
