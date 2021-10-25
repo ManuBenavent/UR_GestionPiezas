@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="RoboDkApi, Version=3.8.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RoboDkApi.4.2.3\lib\net45\RoboDkApi.dll</HintPath>
     </Reference>

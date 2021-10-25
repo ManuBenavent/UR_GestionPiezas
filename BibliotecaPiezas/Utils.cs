@@ -20,5 +20,10 @@ namespace BibliotecaPiezas
                 return Path.GetDirectoryName(path);
             }
         }
+
+        public static double DegreesToRadians (double value)
+        {
+            return (Math.PI / 180) * value;
+        }
     }
 }

@@ -165,24 +165,27 @@ namespace BibliotecaPiezas
             }
         }
 
-        public void TableroToRoboDK (RoboDK.Item ref_frame, RoboDK RDK)
+        public void TableroToRoboDK (RoboDK.Item ref_frame, RoboDK RDK, RoboDK.Item ROBOT)
         {
             foreach (Pieza p in Piezas)
             {
                 if (!p.EnSimulador)
-                    PiezaToRoboDK(ref_frame, RDK, p);
+                    PiezaToRoboDK(ref_frame, RDK, p, ROBOT);
             }
         }
 
-        public void PiezaToRoboDK (RoboDK.Item ref_frame, RoboDK RDK, Pieza p)
+        public void PiezaToRoboDK (RoboDK.Item ref_frame, RoboDK RDK, Pieza p, RoboDK.Item ROBOT)
         {
             RoboDK.Item item = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\pieza.stl", ref_frame); //TODO: incluir una ruta mas adecuada
             double[] scale = new double[3] { p.Ancho/2, p.Largo/2, p.Alto/2 };
             item.Scale(scale);
-            Mat rot = Mat.rotz((Math.PI / 180) * p.Orientacion);
+            Mat rot = Mat.rotz(Utils.DegreesToRadians(p.Orientacion));
             Mat pose = Mat.transl(p.X, p.Y, 0)*rot;
             item.setPose(pose);
+            //item.setPoseFrame(ROBOT);
             item.setName("pieza_" + p.ID);
+            Random rdn = new Random();
+            item.SetColor(0, new List<double> { rdn.NextDouble(), rdn.NextDouble() , rdn.NextDouble(), 1});
             p.EnSimulador = true;
             p.Item = item;
         }

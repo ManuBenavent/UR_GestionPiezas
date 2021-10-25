@@ -29,7 +29,7 @@ namespace GestorPiezasWinForms
         RoboDK.Item ROBOT_BASE = null;
 
         // Define if the robot movements will be blocking
-        const bool MOVE_BLOCKING = false;
+        const bool MOVE_BLOCKING = true;
 
         // Cajas destino
         RoboDK.Item CAJA1 = null;
@@ -141,35 +141,39 @@ namespace GestorPiezasWinForms
                     //SelectRobot();
                     ROBOT = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\UR3.robot");
                     ROBOT_BASE = RDK.getItem("UR3 Base");
+                    ROBOT.MoveC(new double[] { 40, -90, -90, -45, 90, 0 }, new double[] { 90, -90, -90, -90, 90, 0 });
+
+                    RoboDK.Item item = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Pieza.stl", ROBOT_BASE);
+                    double[] scale = new double[3] { 1500, 1500 , 0 };
+                    item.Scale(scale);
+                    item.setName("suelo");
+                    item.SetColor(new List<double> { 100.0 / 255.0, 107.0 / 255.0, 99.0 / 255.0, 1 });
+
                     CAJA1 = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Box.stl", ROBOT_BASE);
                     CAJA1.setName("CajaDestino1");
                     Mat pose = Mat.transl(-300, -150, 0);
                     CAJA1.setPose(pose);
                     CAJA1.Scale(5);
+                    CAJA1.SetColor(new List<double> { 75.0 / 255.0, 54.0 / 255.0, 33.0 / 255.0, 1 });
 
                     CAJA2 = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Box.stl", ROBOT_BASE);
                     CAJA2.setName("CajaDestino2");
                     pose = Mat.transl(0, -330, 0);
                     CAJA2.setPose(pose);
                     CAJA2.Scale(5);
+                    CAJA2.SetColor(new List<double> { 75.0 / 255.0, 54.0 / 255.0, 33.0 / 255.0, 1 });
 
                     CAJA3 = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Box.stl", ROBOT_BASE);
                     CAJA3.setName("CajaDestino3");
                     pose = Mat.transl(300, -150, 0);
                     CAJA3.setPose(pose);
                     CAJA3.Scale(5);
+                    CAJA3.SetColor(new List<double> { 75.0 / 255.0, 54.0 / 255.0, 33.0 / 255.0, 1 });
                 }
                 // display RoboDK by default:
                 mostrarRoboDK_radioButton.PerformClick();
                 
             }
-
-            string a = "";
-            foreach(String s in System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames())
-            {
-                a += s;
-            }
-            Interaction.MsgBox(Assembly.GetExecutingAssembly().Location, MsgBoxStyle.Critical, Title: "Guardar tablero");
         }
 
         private void mostrarRoboDK_radioButton_CheckedChanged(object sender, EventArgs e)
@@ -241,7 +245,7 @@ namespace GestorPiezasWinForms
         private void piezasToRoboDK_Click(object sender, EventArgs e)
         {
             notifybar.Text = "Cargando piezas";
-            tablero.TableroToRoboDK(ROBOT_BASE, RDK);
+            tablero.TableroToRoboDK(ROBOT_BASE, RDK, ROBOT);
             notifybar.Text = "Piezas cargadas";
             UpdateLista();
         }
@@ -278,10 +282,65 @@ namespace GestorPiezasWinForms
             panelPiezas.Controls.Clear();
             foreach (Pieza p in tablero.Piezas)
             {
-                PiezaForm piezaForm = new PiezaForm(tablero, p, ROBOT_BASE, RDK, this);
+                PiezaForm piezaForm = new PiezaForm(tablero, p, ROBOT_BASE, RDK, this, ROBOT);
                 piezaForm.Location = new Point(0, i*60);
                 panelPiezas.Controls.Add(piezaForm);
                 i++;
+            }
+        }
+        private void button4_Click(object sender, EventArgs e)
+        {
+            foreach (Pieza pieza in tablero.Piezas)
+            {
+                Mat robot_pose = ROBOT.Pose();
+                double[] rob_xyzwpr = robot_pose.ToTxyzRxyz();
+                double[] move_xyzwpr = new double[6] { pieza.X, pieza.Y, rob_xyzwpr[2], rob_xyzwpr[3], rob_xyzwpr[4], rob_xyzwpr[5] };
+                Mat movement_pose = Mat.FromTxyzRxyz(move_xyzwpr);
+
+                // Then, we can do the movement:
+                try
+                {
+                    ROBOT.MoveL(movement_pose, MOVE_BLOCKING);
+                }
+                catch (RoboDK.RDKException)
+                {
+                    notifybar.Text = "The robot can't move to " + movement_pose.ToString();
+                    //MessageBox.Show("The robot can't move to " + new_pose.ToString());
+                }
+                robot_pose = ROBOT.Pose();
+                rob_xyzwpr = robot_pose.ToTxyzRxyz();
+                double alto = rob_xyzwpr[2];
+                move_xyzwpr = new double[6] { rob_xyzwpr[0], rob_xyzwpr[1], pieza.Alto, rob_xyzwpr[3], rob_xyzwpr[4], rob_xyzwpr[5] };
+                movement_pose = Mat.FromTxyzRxyz(move_xyzwpr);
+
+                // Then, we can do the movement:
+                try
+                {
+                    ROBOT.MoveL(movement_pose, MOVE_BLOCKING);
+                }
+                catch (RoboDK.RDKException)
+                {
+                    notifybar.Text = "The robot can't move to " + movement_pose.ToString();
+                    //MessageBox.Show("The robot can't move to " + new_pose.ToString());
+                }
+
+                robot_pose = ROBOT.Pose();
+                rob_xyzwpr = robot_pose.ToTxyzRxyz();
+                move_xyzwpr = new double[6] { rob_xyzwpr[0], rob_xyzwpr[1], alto, rob_xyzwpr[3], rob_xyzwpr[4], rob_xyzwpr[5] };
+                movement_pose = Mat.FromTxyzRxyz(move_xyzwpr);
+
+                // Then, we can do the movement:
+                try
+                {
+                    ROBOT.MoveL(movement_pose, MOVE_BLOCKING);
+                }
+                catch (RoboDK.RDKException)
+                {
+                    notifybar.Text = "The robot can't move to " + movement_pose.ToString();
+                    //MessageBox.Show("The robot can't move to " + new_pose.ToString());
+                }
+
+                //ROBOT.MoveC(new double[] { 90, -90, -90, -90, 90, 0 }, new double[] { 90, -90, -90, -90, 90, 0 });
             }
         }
     }

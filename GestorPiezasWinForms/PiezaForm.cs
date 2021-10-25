@@ -18,7 +18,8 @@ namespace GestorPiezasWinForms
         RoboDK.Item ref_frame;
         RoboDK RDK;
         Form1 formSender;
-        public PiezaForm(Tablero tablero, Pieza pieza, RoboDK.Item ref_frame, RoboDK RDK, Form1 formSender)
+        RoboDK.Item ROBOT;
+        public PiezaForm(Tablero tablero, Pieza pieza, RoboDK.Item ref_frame, RoboDK RDK, Form1 formSender, RoboDK.Item robot)
         {
             InitializeComponent();
             this.tablero = tablero;
@@ -26,6 +27,7 @@ namespace GestorPiezasWinForms
             this.ref_frame = ref_frame;
             this.RDK = RDK;
             this.formSender = formSender;
+            this.ROBOT = robot;
         }
 
         private void PiezaForm_Load(object sender, EventArgs e)
@@ -86,7 +88,7 @@ namespace GestorPiezasWinForms
             }
             else
             {
-                tablero.PiezaToRoboDK(ref_frame, RDK, pieza);
+                tablero.PiezaToRoboDK(ref_frame, RDK, pieza, ROBOT);
             }
             formSender.UpdateLista();
         }
