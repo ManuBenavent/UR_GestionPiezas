@@ -93,7 +93,7 @@ namespace BibliotecaPiezas {
         /// <returns>TRUE si colisiona, FALSE si no.</returns>
         internal bool Colisiona (Pieza pieza)
         {
-            return Math.Sqrt(Math.Pow((pieza.X - X), 2) + Math.Pow((pieza.Y - Y), 2)) < Radio;
+            return Utils.EuclideanDistance(pieza.X, pieza.Y, X, Y) < Radio;
         }
 
         /// <summary>

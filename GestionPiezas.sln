@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibliotecaPiezas", "BibliotecaPiezas\BibliotecaPiezas.csproj", "{4C8D74BE-D4E5-4CEE-9172-5F5763116D59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppTesting", "ConsoleAppTesting\ConsoleAppTesting.csproj", "{2401A376-C4B0-4E50-878C-B9EF72504B1F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestorPiezasWinForms", "GestorPiezasWinForms\GestorPiezasWinForms.csproj", "{352AA835-44EC-4F3F-9D77-BE0318C6F6B3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoboDKFlatApiWinformsApplication", "..\..\..\Downloads\Example\RoboDKSampleProject\RoboDKFlatApiWinformsApplication.csproj", "{BF3E6EFA-6CB0-49EF-BCA4-7BFA8BC1460B}"
@@ -21,10 +19,6 @@ Global
 		{4C8D74BE-D4E5-4CEE-9172-5F5763116D59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C8D74BE-D4E5-4CEE-9172-5F5763116D59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C8D74BE-D4E5-4CEE-9172-5F5763116D59}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2401A376-C4B0-4E50-878C-B9EF72504B1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2401A376-C4B0-4E50-878C-B9EF72504B1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2401A376-C4B0-4E50-878C-B9EF72504B1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2401A376-C4B0-4E50-878C-B9EF72504B1F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{352AA835-44EC-4F3F-9D77-BE0318C6F6B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{352AA835-44EC-4F3F-9D77-BE0318C6F6B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{352AA835-44EC-4F3F-9D77-BE0318C6F6B3}.Release|Any CPU.ActiveCfg = Release|Any CPU

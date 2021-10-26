@@ -12,7 +12,7 @@ namespace BibliotecaPiezas
     public class Tablero
     {
         public List<Pieza> Piezas { get; }
-        private const int MIN_LADO = 20;
+        private const int MIN_LADO = 20; //TODO: corregir tamaños
         private const int MAX_LADO = 40;
         private const int MIN_X = -280;
         private const int MIN_Y = 150;
@@ -33,21 +33,23 @@ namespace BibliotecaPiezas
         /// <param name="n">Número de piezas.</param>
         public bool GenerarPiezas (int n)
         {
+            int prev_id = ID_PIEZA;
             Console.WriteLine("Generando piezas");
             Random rnd = new Random();
-            int intentos = 0;
             List<Pieza> nuevas = new List<Pieza>();
             for (int i = 0; i < n; i++)
             {
                 Pieza p;
-                intentos = 0;
+                int intentos = 0;
                 do
                 {
                     p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MAX_ORIENTACION), ID_PIEZA);
-                    //p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y),50, 50, 50, 0, ID_PIEZA);
                     intentos++;
                     if (intentos > 20)
+                    {
+                        ID_PIEZA = prev_id;
                         return false;
+                    }
                 } while (ColisionaTablero(p, nuevas));
                 ID_PIEZA++;
                 nuevas.Add(p);
@@ -176,13 +178,12 @@ namespace BibliotecaPiezas
 
         public void PiezaToRoboDK (RoboDK.Item ref_frame, RoboDK RDK, Pieza p, RoboDK.Item ROBOT)
         {
-            RoboDK.Item item = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\pieza.stl", ref_frame); //TODO: incluir una ruta mas adecuada
+            RoboDK.Item item = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\pieza.stl", ref_frame);
             double[] scale = new double[3] { p.Ancho/2, p.Largo/2, p.Alto/2 };
             item.Scale(scale);
             Mat rot = Mat.rotz(Utils.DegreesToRadians(p.Orientacion));
             Mat pose = Mat.transl(p.X, p.Y, 0)*rot;
             item.setPose(pose);
-            //item.setPoseFrame(ROBOT);
             item.setName("pieza_" + p.ID);
             Random rdn = new Random();
             item.SetColor(0, new List<double> { rdn.NextDouble(), rdn.NextDouble() , rdn.NextDouble(), 1});

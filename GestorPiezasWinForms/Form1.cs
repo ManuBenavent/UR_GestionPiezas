@@ -22,24 +22,94 @@ namespace GestorPiezasWinForms
         private Tablero tablero;
         // RDK holds the main object to interact with RoboDK.
         // The RoboDK application starts when a RoboDK object is created.
-        RoboDK RDK = null;
+        private RoboDK RDK = null;
 
         // Keep the ROBOT item as a global variable
-        RoboDK.Item ROBOT = null;
-        RoboDK.Item ROBOT_BASE = null;
+        private RoboDK.Item ROBOT = null;
+        private RoboDK.Item ROBOT_BASE = null;
 
         // Define if the robot movements will be blocking
-        const bool MOVE_BLOCKING = true;
+        private const bool MOVE_BLOCKING = true;
 
         // Cajas destino
-        RoboDK.Item CAJA1 = null;
-        RoboDK.Item CAJA2 = null;
-        RoboDK.Item CAJA3 = null;
+        private RoboDK.Item CAJA1 = null;
+        private RoboDK.Item CAJA2 = null;
+        private RoboDK.Item CAJA3 = null;
 
+        // Posiciones referencia
+        private const double Piezas_X = 0;
+        private const double Piezas_Y = 300;
+        internal readonly struct CAJA
+        {
+            internal CAJA(double x, double y)
+            {
+                X = x;
+                Y = y;
+            }
+            internal readonly double X;
+            internal readonly double Y;
+        };
+        private readonly List<CAJA> CAJAS = new List<CAJA> { new CAJA(300, -250), new CAJA(0, -390), new CAJA(-300, -250) };
+
+        // Constructor
         public Form1()
         {
             InitializeComponent();
             tablero = new Tablero();
+        }
+
+        // LoadForm
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            // Start RoboDK here if we want to start it before the Form is displayed
+            if (!Check_RDK())
+            {
+                // RoboDK starts here. We can optionally pass arguments to start it hidden or start it remotely on another computer provided the computer IP.
+                // If RoboDK was already running it will just connect to the API. We can force a new RoboDK instance and specify a communication port
+                RDK = new RoboDK();
+
+                // Check if RoboDK started properly
+                if (Check_RDK())
+                {
+                    notifybar.Text = "RoboDK is Running...";
+                    
+                    // attempt to auto select the robot:
+                    //SelectRobot();
+                    ROBOT = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\UR3.robot");
+                    ROBOT_BASE = RDK.getItem("UR3 Base");
+                    ROBOT.MoveC(new double[] { 40, -90, -90, -45, 90, 0 }, new double[] { 90, -90, -90, -90, 90, 0 });
+
+                    RoboDK.Item item = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Pieza.stl", ROBOT_BASE);
+                    double[] scale = new double[3] { 1500, 1500 , 0 };
+                    item.Scale(scale);
+                    item.setName("suelo");
+                    item.SetColor(new List<double> { 100.0 / 255.0, 107.0 / 255.0, 99.0 / 255.0, 1 });
+
+                    CAJA1 = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Box.stl", ROBOT_BASE);
+                    CAJA1.setName("CajaDestino1");
+                    Mat pose = Mat.transl(CAJAS[0].X, CAJAS[0].Y, 0);
+                    CAJA1.setPose(pose);
+                    CAJA1.Scale(5);
+                    CAJA1.SetColor(new List<double> { 75.0 / 255.0, 54.0 / 255.0, 33.0 / 255.0, 1 });
+
+                    CAJA2 = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Box.stl", ROBOT_BASE);
+                    CAJA2.setName("CajaDestino2");
+                    pose = Mat.transl(CAJAS[1].X, CAJAS[1].Y, 0);
+                    CAJA2.setPose(pose);
+                    CAJA2.Scale(5);
+                    CAJA2.SetColor(new List<double> { 75.0 / 255.0, 54.0 / 255.0, 33.0 / 255.0, 1 });
+
+                    CAJA3 = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Box.stl", ROBOT_BASE);
+                    CAJA3.setName("CajaDestino3");
+                    pose = Mat.transl(CAJAS[2].X, CAJAS[2].Y, 0);
+                    CAJA3.setPose(pose);
+                    CAJA3.Scale(5);
+                    CAJA3.SetColor(new List<double> { 75.0 / 255.0, 54.0 / 255.0, 33.0 / 255.0, 1 });
+                }
+                // display RoboDK by default:
+                mostrarRoboDK_radioButton.PerformClick();
+                
+            }
         }
 
         // Generar piezas
@@ -94,6 +164,7 @@ namespace GestorPiezasWinForms
             }
         }
 
+        // Cargar tablero
         private void button3_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog()
@@ -123,59 +194,7 @@ namespace GestorPiezasWinForms
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            // Start RoboDK here if we want to start it before the Form is displayed
-            if (!Check_RDK())
-            {
-                // RoboDK starts here. We can optionally pass arguments to start it hidden or start it remotely on another computer provided the computer IP.
-                // If RoboDK was already running it will just connect to the API. We can force a new RoboDK instance and specify a communication port
-                RDK = new RoboDK();
-
-                // Check if RoboDK started properly
-                if (Check_RDK())
-                {
-                    notifybar.Text = "RoboDK is Running...";
-                    
-                    // attempt to auto select the robot:
-                    //SelectRobot();
-                    ROBOT = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\UR3.robot");
-                    ROBOT_BASE = RDK.getItem("UR3 Base");
-                    ROBOT.MoveC(new double[] { 40, -90, -90, -45, 90, 0 }, new double[] { 90, -90, -90, -90, 90, 0 });
-
-                    RoboDK.Item item = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Pieza.stl", ROBOT_BASE);
-                    double[] scale = new double[3] { 1500, 1500 , 0 };
-                    item.Scale(scale);
-                    item.setName("suelo");
-                    item.SetColor(new List<double> { 100.0 / 255.0, 107.0 / 255.0, 99.0 / 255.0, 1 });
-
-                    CAJA1 = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Box.stl", ROBOT_BASE);
-                    CAJA1.setName("CajaDestino1");
-                    Mat pose = Mat.transl(-300, -150, 0);
-                    CAJA1.setPose(pose);
-                    CAJA1.Scale(5);
-                    CAJA1.SetColor(new List<double> { 75.0 / 255.0, 54.0 / 255.0, 33.0 / 255.0, 1 });
-
-                    CAJA2 = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Box.stl", ROBOT_BASE);
-                    CAJA2.setName("CajaDestino2");
-                    pose = Mat.transl(0, -330, 0);
-                    CAJA2.setPose(pose);
-                    CAJA2.Scale(5);
-                    CAJA2.SetColor(new List<double> { 75.0 / 255.0, 54.0 / 255.0, 33.0 / 255.0, 1 });
-
-                    CAJA3 = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Box.stl", ROBOT_BASE);
-                    CAJA3.setName("CajaDestino3");
-                    pose = Mat.transl(300, -150, 0);
-                    CAJA3.setPose(pose);
-                    CAJA3.Scale(5);
-                    CAJA3.SetColor(new List<double> { 75.0 / 255.0, 54.0 / 255.0, 33.0 / 255.0, 1 });
-                }
-                // display RoboDK by default:
-                mostrarRoboDK_radioButton.PerformClick();
-                
-            }
-        }
-
+        // Mostrar RoboDK
         private void mostrarRoboDK_radioButton_CheckedChanged(object sender, EventArgs e)
         {
             // skip if the radio button became unchecked
@@ -203,6 +222,7 @@ namespace GestorPiezasWinForms
         [DllImport("user32.dll")]
         static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
+        // Ocultar RoboDK         
         private void ocultarRoboDK_radioButton_CheckedChanged(object sender, EventArgs e)
         {
             // skip if the radio button became unchecked
@@ -288,59 +308,50 @@ namespace GestorPiezasWinForms
                 i++;
             }
         }
+
+        // Recoger piezas
         private void button4_Click(object sender, EventArgs e)
         {
-            foreach (Pieza pieza in tablero.Piezas)
+            try
             {
-                Mat robot_pose = ROBOT.Pose();
-                double[] rob_xyzwpr = robot_pose.ToTxyzRxyz();
-                double[] move_xyzwpr = new double[6] { pieza.X, pieza.Y, rob_xyzwpr[2], rob_xyzwpr[3], rob_xyzwpr[4], rob_xyzwpr[5] };
-                Mat movement_pose = Mat.FromTxyzRxyz(move_xyzwpr);
+                foreach (Pieza pieza in tablero.Piezas)
+                {
+                    // Encima de la pieza
+                    MovimientoRobot.MovimientoHorizontal(ROBOT, pieza.X, pieza.Y);
 
-                // Then, we can do the movement:
-                try
-                {
-                    ROBOT.MoveL(movement_pose, MOVE_BLOCKING);
-                }
-                catch (RoboDK.RDKException)
-                {
-                    notifybar.Text = "The robot can't move to " + movement_pose.ToString();
-                    //MessageBox.Show("The robot can't move to " + new_pose.ToString());
-                }
-                robot_pose = ROBOT.Pose();
-                rob_xyzwpr = robot_pose.ToTxyzRxyz();
-                double alto = rob_xyzwpr[2];
-                move_xyzwpr = new double[6] { rob_xyzwpr[0], rob_xyzwpr[1], pieza.Alto, rob_xyzwpr[3], rob_xyzwpr[4], rob_xyzwpr[5] };
-                movement_pose = Mat.FromTxyzRxyz(move_xyzwpr);
+                    // TODO: falta orientar y elegir ventosa
+                    // Bajo a por la pieza
+                    double altura_previa = ROBOT.Pose().ToTxyzRxyz()[2];
+                    MovimientoRobot.MovimientoVertical(ROBOT, pieza.Alto + 2); //2mm de margen para evitar la colisión
+                    // TODO: recoger pieza
 
-                // Then, we can do the movement:
-                try
-                {
-                    ROBOT.MoveL(movement_pose, MOVE_BLOCKING);
+                    // Vuelvo a altura referencia
+                    MovimientoRobot.MovimientoVertical(ROBOT, altura_previa);
                 }
-                catch (RoboDK.RDKException)
-                {
-                    notifybar.Text = "The robot can't move to " + movement_pose.ToString();
-                    //MessageBox.Show("The robot can't move to " + new_pose.ToString());
-                }
+                // Elegimos una caja aleatoria
+                Random rdn = new Random();
+                CAJA caja = CAJAS[rdn.Next(0, 3)];
+                // Vamos a un radio conocido (390) en el cual se encuentran las 3 cajas, mantenemos la X y calculamos una nueva Y
+                MovimientoRobot.MovimientoHorizontal(ROBOT, ROBOT.Pose().ToTxyzRxyz()[0], Math.Sqrt(Math.Pow(390,2) - Math.Pow((ROBOT.Pose().ToTxyzRxyz()[0]),2)));
 
-                robot_pose = ROBOT.Pose();
-                rob_xyzwpr = robot_pose.ToTxyzRxyz();
-                move_xyzwpr = new double[6] { rob_xyzwpr[0], rob_xyzwpr[1], alto, rob_xyzwpr[3], rob_xyzwpr[4], rob_xyzwpr[5] };
-                movement_pose = Mat.FromTxyzRxyz(move_xyzwpr);
+                // Calculamos grados de movimiento en función de pos actual
+                double x = ROBOT.Pose().ToTxyzRxyz()[0];
+                double y = ROBOT.Pose().ToTxyzRxyz()[1];
+                double alpha = Utils.RadiansToDegrees(Math.Asin((Utils.EuclideanDistance(x, y, caja.X, caja.Y) / 2) / 390))*2; // Valor siempre de 0 a 180
 
-                // Then, we can do the movement:
-                try
-                {
-                    ROBOT.MoveL(movement_pose, MOVE_BLOCKING);
-                }
-                catch (RoboDK.RDKException)
-                {
-                    notifybar.Text = "The robot can't move to " + movement_pose.ToString();
-                    //MessageBox.Show("The robot can't move to " + new_pose.ToString());
-                }
+                // Mediante la ecuacion de la recta determinar el signo de alpha
+                alpha *= Utils.GiroPosNeg(x, y, caja.X, caja.Y);
 
-                //ROBOT.MoveC(new double[] { 90, -90, -90, -90, 90, 0 }, new double[] { 90, -90, -90, -90, 90, 0 });
+                // Movimiento circular: las 3 cajas en su radio
+                MovimientoRobot.MoverBase(ROBOT, alpha);
+
+                // TODO: dejar piezas (asegurar todas dentro)
+
+                // Deshacemos giro de la base
+                MovimientoRobot.MoverBase(ROBOT, -1*alpha);
+            }catch(Exception excp)
+            {
+                notifybar.Text = "El robot no se pudo mover a la posición " + excp.Message;
             }
         }
     }
