@@ -27,6 +27,7 @@ namespace GestorPiezasWinForms
         // Keep the ROBOT item as a global variable
         private RoboDK.Item ROBOT = null;
         private RoboDK.Item ROBOT_BASE = null;
+        private RoboDK.Item VENTOSA = null;
 
         // Define if the robot movements will be blocking
         private const bool MOVE_BLOCKING = true;
@@ -78,6 +79,9 @@ namespace GestorPiezasWinForms
                     ROBOT = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\UR3.robot");
                     ROBOT_BASE = RDK.getItem("UR3 Base");
                     ROBOT.MoveC(new double[] { 40, -90, -90, -45, 90, 0 }, new double[] { 90, -90, -90, -90, 90, 0 });
+
+                    VENTOSA = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Ventosa-Tool.stl");
+                    VENTOSA.setPoseTool(Mat.transl(0, 0, 50));
 
                     RoboDK.Item item = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Pieza.stl", ROBOT_BASE);
                     double[] scale = new double[3] { 1500, 1500 , 0 };
