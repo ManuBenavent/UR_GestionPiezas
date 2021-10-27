@@ -12,8 +12,8 @@ namespace BibliotecaPiezas
     public class Tablero
     {
         public List<Pieza> Piezas { get; }
-        private const int MIN_LADO = 20; //TODO: corregir tamaños
-        private const int MAX_LADO = 40;
+        private const int MIN_LADO = 40; //TODO: corregir tamaños
+        private const int MAX_LADO = 150;
         private const int MIN_X = -280;
         private const int MIN_Y = 150;
         private const int MAX_X = 280;
@@ -43,7 +43,8 @@ namespace BibliotecaPiezas
                 int intentos = 0;
                 do
                 {
-                    p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MAX_ORIENTACION), ID_PIEZA);
+                    //p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MAX_ORIENTACION), ID_PIEZA);
+                    p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), 40,40, 40, rnd.Next(MAX_ORIENTACION), ID_PIEZA);
                     intentos++;
                     if (intentos > 20)
                     {
@@ -158,13 +159,11 @@ namespace BibliotecaPiezas
             }
         }
 
-        public void ExtraerPiezas()
+        public List<Pieza> ExtraerPiezas()
         {
             List<int> ids = ExtraerPieza.BestSolution(Piezas);
-            foreach (int id in ids)
-            {
-                Console.WriteLine(id + ": " + Piezas[id].Area);
-            }
+            IEnumerable<Pieza> query = Piezas.Where((pieza, index) => ids.Contains(index));
+            return query.ToList();
         }
 
         public void TableroToRoboDK (RoboDK.Item ref_frame, RoboDK RDK, RoboDK.Item ROBOT)

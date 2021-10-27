@@ -40,7 +40,14 @@ namespace GestorPiezasWinForms
             textBox_Orientacion.Text = pieza.Orientacion.ToString();
             if (pieza.EnSimulador)
             {
-                label7.Text = "Creada ID: " + pieza.ID;
+                if (pieza.Recogida)
+                {
+                    label7.Text = "Recogida ID: " + pieza.ID;
+                }
+                else
+                {
+                    label7.Text = "Creada ID: " + pieza.ID;
+                }
                 textBox_X.Enabled = false;
                 textBox_Y.Enabled = false;
                 textBox_Ancho.Enabled = false;
@@ -84,6 +91,7 @@ namespace GestorPiezasWinForms
             {
                 pieza.Item.Delete();
                 pieza.EnSimulador = false;
+                pieza.Recogida = false;
                 pieza.Item = null;
             }
             else

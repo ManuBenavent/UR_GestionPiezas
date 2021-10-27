@@ -9,6 +9,7 @@ namespace BibliotecaPiezas
     internal static class ExtraerPieza
     {
         private static Dictionary<KeyValuePair<int, int>, long> almacen;
+        private static List<bool> piezas_validas;
         private static List<long> values;
         private static List<int> sizes;
         private const int kVentosas = 4;
@@ -24,10 +25,13 @@ namespace BibliotecaPiezas
             almacen = new Dictionary<KeyValuePair<int, int>, long>();
             values = new List<long>();
             sizes = new List<int>();
+            piezas_validas = new List<bool>();
             foreach (Pieza p in piezas)
             {
                 values.Add((long)Math.Pow(2, p.Alto)); // Con crecimiento exponencial damos preferencia a las mas altas para evitar choques
+                //values.Add(1);
                 sizes.Add(p.Area);
+                piezas_validas.Add(p.EnSimulador && !p.Recogida);
             }
             long r = BestRecursive(piezas.Count, kVentosas);
             List<int> sol = new List<int>();
@@ -47,7 +51,7 @@ namespace BibliotecaPiezas
                 return almacen[key];
             }
             long res;
-            if (n - sizes[iterator - 1] >= 0)
+            if (n - sizes[iterator - 1] >= 0 && piezas_validas[iterator - 1])
             {
                 res = Math.Max(BestRecursive(iterator - 1, n - sizes[iterator - 1]) + values[iterator - 1], BestRecursive(iterator - 1, n));
             }

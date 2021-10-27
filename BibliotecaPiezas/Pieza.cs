@@ -25,6 +25,8 @@ namespace BibliotecaPiezas {
         public int Orientacion { get; set; }
         /// <summary>Determina si la pieza se ha cargado en RoboDK</summary>
         public bool EnSimulador { get; set; }
+        /// <summary>Determina si la pieza se ha recogido en RoboDK</summary>
+        public bool Recogida { get; set; }
         /// <summary>Referencia al item que representa la pieza en RoboDK</summary>
         public RoboDK.Item Item { get; set; }
         ///<summary>ID de la pieza</summary>
@@ -32,8 +34,8 @@ namespace BibliotecaPiezas {
         private int Radio { get { return Math.Max(Ancho, Largo) + 10; } }
 
 
-        private const int kSUPERFICIE_1_VENTOSA = 50; // TODO: determinar en funcion del tamaño
-        private const int kSUPERFICIE_2_VENTOSA = 60;
+        private const int kSUPERFICIE_1_VENTOSA = 1600; 
+        private const int kSUPERFICIE_2_VENTOSA = 60;// TODO: determinar en funcion del tamaño
         private const int kSUPERFICIE_3_VENTOSA = 70;
         /// <summary>Determina el numero de ventosas que se necesitan para la pieza</summary>
         internal int Area { get
@@ -68,6 +70,7 @@ namespace BibliotecaPiezas {
             Item = null;
             EnSimulador = false;
             this.ID = ID;
+            Recogida = false;
         }
 
         /// <summary>
@@ -84,6 +87,7 @@ namespace BibliotecaPiezas {
             this.ID = ID;
             Item = null;
             EnSimulador = false;
+            Recogida = false;
         }
 
         /// <summary>
@@ -131,7 +135,7 @@ namespace BibliotecaPiezas {
         internal void RecuperarXml(XmlNode xmlPieza)
         {
             X = int.Parse(xmlPieza["x"].InnerText);
-            Y = int.Parse(xmlPieza["x"].InnerText);
+            Y = int.Parse(xmlPieza["y"].InnerText);
             Ancho = int.Parse(xmlPieza["ancho"].InnerText);
             Alto = int.Parse(xmlPieza["alto"].InnerText);
             Largo = int.Parse(xmlPieza["largo"].InnerText);

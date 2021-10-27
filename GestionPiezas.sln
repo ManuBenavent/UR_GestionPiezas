@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibliotecaPiezas", "Bibliot
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestorPiezasWinForms", "GestorPiezasWinForms\GestorPiezasWinForms.csproj", "{352AA835-44EC-4F3F-9D77-BE0318C6F6B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoboDKFlatApiWinformsApplication", "..\..\..\Downloads\Example\RoboDKSampleProject\RoboDKFlatApiWinformsApplication.csproj", "{BF3E6EFA-6CB0-49EF-BCA4-7BFA8BC1460B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{C2F031C2-3381-48EA-ABD7-666BE7B83D4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{352AA835-44EC-4F3F-9D77-BE0318C6F6B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{352AA835-44EC-4F3F-9D77-BE0318C6F6B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{352AA835-44EC-4F3F-9D77-BE0318C6F6B3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BF3E6EFA-6CB0-49EF-BCA4-7BFA8BC1460B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BF3E6EFA-6CB0-49EF-BCA4-7BFA8BC1460B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BF3E6EFA-6CB0-49EF-BCA4-7BFA8BC1460B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BF3E6EFA-6CB0-49EF-BCA4-7BFA8BC1460B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2F031C2-3381-48EA-ABD7-666BE7B83D4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2F031C2-3381-48EA-ABD7-666BE7B83D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2F031C2-3381-48EA-ABD7-666BE7B83D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2F031C2-3381-48EA-ABD7-666BE7B83D4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
