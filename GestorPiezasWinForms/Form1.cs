@@ -320,8 +320,12 @@ namespace GestorPiezasWinForms
             {
                 List<Pieza> piezas_mov = tablero.ExtraerPiezas();
                 int ventosa_id = 0;
+                int pieza_id = 0;
                 foreach (Pieza pieza in piezas_mov)
                 {
+                    if (pieza.EnZonaAmarilla)
+                    if (pieza.EnZonaAmarilla && ((pieza_id - 1) < 0 || !piezas_mov[pieza_id - 1].EnZonaAmarilla))
+                            MovimientoRobot.ZonaAmarilla(ROBOT);
                     // Oriento la herramienta
                     MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion);
 
@@ -354,6 +358,11 @@ namespace GestorPiezasWinForms
 
                     pieza.Recogida = true;
                     ventosa_id += pieza.Ventosas;
+
+                    if (pieza.EnZonaAmarilla && ((pieza_id + 1) >= piezas_mov.Count || !piezas_mov[pieza_id + 1].EnZonaAmarilla))
+                            MovimientoRobot.ZonaVerde(ROBOT);
+
+                    pieza_id++;
                 }
                 ROBOT.setTool(VENTOSA);
                 if (piezas_mov.Count > 0)

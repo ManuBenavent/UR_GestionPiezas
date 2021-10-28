@@ -45,7 +45,12 @@ namespace BibliotecaPiezas {
                 else if (Ancho <= ANCHO_2_VENTOSA) return 2;
                 else if (Ancho <= ANCHO_3_VENTOSA) return 3;
                 else return 4;
-            } }
+        } }
+
+        public bool EnZonaAmarilla { get
+        {
+                return Utils.EuclideanDistance(0, 0, X, Y) <= 200;
+        } }
         
         
 

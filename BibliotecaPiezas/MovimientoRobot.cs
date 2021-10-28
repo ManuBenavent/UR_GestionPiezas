@@ -77,5 +77,38 @@ namespace BibliotecaPiezas
                 throw new Exception("Grados base: " + grados.ToString());
             }
         }
+
+        public static void ZonaAmarilla(RoboDK.Item ROBOT)
+        {
+            try
+            {
+                ROBOT.MoveJ(new double[] { 90, -90, -90, -90, 90, 0 });
+                double[] jo = ROBOT.Joints();
+                jo[3] = 90;
+                ROBOT.MoveJ(jo);
+                jo[4] = -90;
+                ROBOT.MoveJ(jo);
+            }
+            catch (RoboDK.RDKException)
+            {
+                throw new Exception("No se pudo colocar en orientacion zona amarilla");
+            }
+        }
+
+        public static void ZonaVerde(RoboDK.Item ROBOT)
+        {
+            try
+            {
+                double[] jo = ROBOT.Joints();
+                jo[4] = 90;
+                ROBOT.MoveJ(jo);
+                jo[3] = -90;
+                ROBOT.MoveJ(jo);
+            }
+            catch (RoboDK.RDKException)
+            {
+                throw new Exception("No se pudo colocar en orientacion zona amarilla");
+            }
+        }
     }
 }
