@@ -32,6 +32,9 @@ namespace GestorPiezasWinForms
         // Cajas destino
         private readonly List<Caja> CAJAS = new List<Caja> { new Caja(300, -250), new Caja(0, -390), new Caja(-300, -250) };
 
+        // Ventosas
+        private List<RoboDK.Item> Ventosas = new List<RoboDK.Item>();
+
         // Constructor
         public Form1()
         {
@@ -63,6 +66,11 @@ namespace GestorPiezasWinForms
                     VENTOSA = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Ventosa-Tool.stl", ROBOT);
                     VENTOSA.setPoseTool(Mat.transl(0, 0, 50));
 
+                    Ventosas.Add(ROBOT.AddTool(Mat.transl(60,0,50), "ventosa1"));
+                    Ventosas.Add(ROBOT.AddTool(Mat.transl(30, 0, 50), "ventosa2"));
+                    Ventosas.Add(ROBOT.AddTool(Mat.transl(-30, 0, 50), "ventosa3"));
+                    Ventosas.Add(ROBOT.AddTool(Mat.transl(-60, 0, 50), "ventosa4"));
+                    
                     RoboDK.Item item = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Pieza.stl", ROBOT_BASE);
                     double[] scale = new double[3] { 1500, 1500 , 0 };
                     item.Scale(scale);
@@ -301,13 +309,16 @@ namespace GestorPiezasWinForms
             try
             {
                 List<Pieza> piezas_mov = tablero.ExtraerPiezas();
+                int ventosa_id = 0;
                 foreach (Pieza pieza in piezas_mov)
                 {
+                    // Oriento la herramienta
+                    MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion);
+
+                    ROBOT.setTool(Ventosas[ventosa_id]);
                     // Encima de la pieza
                     MovimientoRobot.MovimientoHorizontal(ROBOT, pieza.X, pieza.Y);
                     
-                    // Oriento la herramienta
-                    MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion);
 
                     // Bajo a por la pieza
                     double altura_previa = ROBOT.Pose().ToTxyzRxyz()[2];
@@ -315,7 +326,7 @@ namespace GestorPiezasWinForms
                     
                     // TODO: recoger pieza con ventosa correcta
                     System.Threading.Thread.Sleep(500); // Medio segundo de espera para que se vea claro
-                    pieza.Item.setParentStatic(VENTOSA);
+                    pieza.Item.setParentStatic(Ventosas[ventosa_id]);
 
                     // Vuelvo a altura referencia
                     MovimientoRobot.MovimientoVertical(ROBOT, altura_previa);
@@ -324,8 +335,9 @@ namespace GestorPiezasWinForms
                     MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion, true);
 
                     pieza.Recogida = true;
+                    ventosa_id++;
                 }
-
+                ROBOT.setTool(VENTOSA);
                 if (piezas_mov.Count > 0)
                 {
                     // Elegimos una caja aleatoria

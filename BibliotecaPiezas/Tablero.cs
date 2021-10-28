@@ -43,8 +43,8 @@ namespace BibliotecaPiezas
                 int intentos = 0;
                 do
                 {
-                    p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MAX_ORIENTACION), ID_PIEZA);
-                    //p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), 40,40, 40, rnd.Next(MAX_ORIENTACION), ID_PIEZA);
+                    //p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MAX_ORIENTACION), ID_PIEZA);
+                    p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), 40,40, 40, rnd.Next(MAX_ORIENTACION), ID_PIEZA);
                     intentos++;
                     if (intentos > 20)
                     {
