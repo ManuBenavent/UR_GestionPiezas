@@ -12,7 +12,7 @@ namespace BibliotecaPiezas
     public class Tablero
     {
         public List<Pieza> Piezas { get; }
-        private const int MIN_ANCHO = 35;
+        private const int MIN_ANCHO = 15;
         private const int MAX_ANCHO = 140;
         private const int MIN_LARGO = 35;
         private const int MAX_LARGO = 70;
