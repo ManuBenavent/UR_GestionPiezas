@@ -29,6 +29,7 @@ namespace BibliotecaPiezas {
         public bool Recogida { get; set; }
         /// <summary>Referencia al item que representa la pieza en RoboDK</summary>
         public RoboDK.Item Item { get; set; }
+        public int Caja { get; set; }
         ///<summary>ID de la pieza</summary>
         public int ID { get; set; }
         private int Radio { get { return Math.Max(Ancho, Largo) + 10; } }

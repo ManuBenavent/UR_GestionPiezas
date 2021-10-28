@@ -28,7 +28,8 @@ namespace BibliotecaPiezas
             piezas_validas = new List<bool>();
             foreach (Pieza p in piezas)
             {
-                values.Add((long)Math.Pow(2, p.Alto)); // Con crecimiento exponencial damos preferencia a las mas altas para evitar choques
+                //values.Add((long)Math.Pow(2, p.Alto)); // Con crecimiento exponencial damos preferencia a las mas altas para evitar choques
+                values.Add(p.Alto);
                 //values.Add(1);
                 sizes.Add(p.Area);
                 piezas_validas.Add(p.EnSimulador && !p.Recogida);
@@ -54,9 +55,9 @@ namespace BibliotecaPiezas
             if (n - sizes[iterator - 1] >= 0 && piezas_validas[iterator - 1])
             {
                 res = Math.Max(BestRecursive(iterator - 1, n - sizes[iterator - 1]) + values[iterator - 1], BestRecursive(iterator - 1, n));
+                almacen.Add(key, res);
             }
             else res = BestRecursive(iterator - 1, n);
-            almacen.Add(key, res);
             return res;
         }
 
@@ -64,25 +65,32 @@ namespace BibliotecaPiezas
         {
             if (total == 0 || it <= 0 || n == 0) return;
 
-            // NO COGIDO
-            long s1 = 0;
-            KeyValuePair<int, int> key1 = new KeyValuePair<int, int>(it - 1, n);
-            if (almacen.ContainsKey(key1))
-                s1 = almacen[key1];
-
-            // COGIDO
-            long s2 = values[it - 1];
-            KeyValuePair<int, int> key2 = new KeyValuePair<int, int>(it - 1, n - sizes[it - 1]);
-            if (almacen.ContainsKey(key2))
-                s2 += almacen[key2];
-
-            // ELIJO
-            if (s2 >= s1)
+            if (piezas_validas[it - 1])
             {
-                sol.Add(it - 1);
-                ParseSol(it - 1, n - sizes[it - 1], total - values[it - 1], sol);
+                // NO COGIDO
+                long s1 = 0;
+                KeyValuePair<int, int> key1 = new KeyValuePair<int, int>(it - 1, n);
+                if (almacen.ContainsKey(key1))
+                    s1 = almacen[key1];
+
+                // COGIDO
+                long s2 = values[it - 1];
+                KeyValuePair<int, int> key2 = new KeyValuePair<int, int>(it - 1, n - sizes[it - 1]);
+                if (almacen.ContainsKey(key2))
+                    s2 += almacen[key2];
+
+                // ELIJO
+                if (s2 >= s1)
+                {
+                    sol.Add(it - 1);
+                    ParseSol(it - 1, n - sizes[it - 1], total - values[it - 1], sol);
+                }
+                else ParseSol(it - 1, n, total, sol);
             }
-            else ParseSol(it - 1, n, total, sol);
+            else
+            {
+                ParseSol(it - 1, n, total, sol);
+            }
 
         }
     }

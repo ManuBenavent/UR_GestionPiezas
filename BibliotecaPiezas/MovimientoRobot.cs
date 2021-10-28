@@ -59,35 +59,18 @@ namespace BibliotecaPiezas
             }
         }
 
-        public static double OrientarVentosa (RoboDK.Item ROBOT, double grados)
+        public static void OrientarVentosa (RoboDK.Item ROBOT, double grados, bool reverse = false)
         {
-            /*double[] joints = ROBOT.Joints();
-            double[] intermediate_joints = new double[joints.Length];
-            double[] final_joints = new double[joints.Length];
-            Array.Copy(joints, intermediate_joints, joints.Length);
-            Array.Copy(joints, final_joints, joints.Length);
-            intermediate_joints[5] = -1*joints[5];
-            final_joints[5] = grados;
-
-            try
-            {
-                //ROBOT.MoveC(intermediate_joints, final_joints, MOVE_BLOCKING);
-                //ROBOT.MoveJ(intermediate_joints, MOVE_BLOCKING);
-                ROBOT.MoveJ(final_joints, MOVE_BLOCKING);
-            }
-            catch (RoboDK.RDKException)
-            {
-                throw new Exception("Grados herramienta: " + grados.ToString());
-            }*/
-
             double[] joints = ROBOT.Joints();
             double prev = joints[5];
-            joints[5] += grados;
+            if (reverse)
+                joints[5] += grados;
+            else
+                joints[5] -= grados;
 
             try
             {
                 ROBOT.MoveJ(joints, MOVE_BLOCKING);
-                return prev;
             }
             catch (RoboDK.RDKException)
             {

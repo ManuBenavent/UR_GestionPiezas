@@ -42,7 +42,7 @@ namespace GestorPiezasWinForms
             {
                 if (pieza.Recogida)
                 {
-                    label7.Text = "Recogida ID: " + pieza.ID;
+                    label7.Text = "Caja " + pieza.Caja + "(P_" + pieza.ID + ")";
                 }
                 else
                 {

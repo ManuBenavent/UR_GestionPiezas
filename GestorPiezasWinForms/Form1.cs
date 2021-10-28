@@ -286,8 +286,10 @@ namespace GestorPiezasWinForms
             panelPiezas.Controls.Clear();
             foreach (Pieza p in tablero.Piezas)
             {
-                PiezaForm piezaForm = new PiezaForm(tablero, p, ROBOT_BASE, RDK, this, ROBOT);
-                piezaForm.Location = new Point(0, i*60);
+                PiezaForm piezaForm = new PiezaForm(tablero, p, ROBOT_BASE, RDK, this, ROBOT)
+                {
+                    Location = new Point(0, i * 60)
+                };
                 panelPiezas.Controls.Add(piezaForm);
                 i++;
             }
@@ -303,9 +305,9 @@ namespace GestorPiezasWinForms
                 {
                     // Encima de la pieza
                     MovimientoRobot.MovimientoHorizontal(ROBOT, pieza.X, pieza.Y);
-
-                    //TODO: Oriento la herramienta
-                    double prev_degrees = MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion);
+                    
+                    // Oriento la herramienta
+                    MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion);
 
                     // Bajo a por la pieza
                     double altura_previa = ROBOT.Pose().ToTxyzRxyz()[2];
@@ -319,39 +321,46 @@ namespace GestorPiezasWinForms
                     MovimientoRobot.MovimientoVertical(ROBOT, altura_previa);
 
                     // Reorientamos ventosa
-                    MovimientoRobot.OrientarVentosa(ROBOT, -1*prev_degrees);
+                    MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion, true);
 
                     pieza.Recogida = true;
                 }
 
-                // Elegimos una caja aleatoria
-                Random rdn = new Random();
-                Caja caja = CAJAS[rdn.Next(0, 3)];
-
-                // Vamos a un radio conocido (390) en el cual se encuentran las 3 cajas, mantenemos la X y calculamos una nueva Y
-                MovimientoRobot.MovimientoHorizontal(ROBOT, ROBOT.Pose().ToTxyzRxyz()[0], Math.Sqrt(Math.Pow(390,2) - Math.Pow((ROBOT.Pose().ToTxyzRxyz()[0]),2)));
-
-                // Calculamos grados de movimiento en función de pos actual
-                double x = ROBOT.Pose().ToTxyzRxyz()[0];
-                double y = ROBOT.Pose().ToTxyzRxyz()[1];
-                double alpha = Utils.RadiansToDegrees(Math.Asin((Utils.EuclideanDistance(x, y, caja.X, caja.Y) / 2) / 390))*2; // Valor siempre de 0 a 180
-
-                // Mediante la ecuacion de la recta determinar el signo de alpha
-                alpha *= Utils.GiroPosNeg(x, y, caja.X, caja.Y);
-
-                // Movimiento circular: las 3 cajas en su radio
-                MovimientoRobot.MoverBase(ROBOT, alpha);
-
-                // TODO: dejar piezas (asegurar todas dentro)
-                foreach(Pieza p in piezas_mov)
+                if (piezas_mov.Count > 0)
                 {
-                    p.Item.setParent(caja.Item);
+                    // Elegimos una caja aleatoria
+                    Random rdn = new Random();
+                    int caja_id = rdn.Next(0, 3);
+                    Caja caja = CAJAS[caja_id];
+
+                    // Vamos a un radio conocido (390) en el cual se encuentran las 3 cajas, mantenemos la X y calculamos una nueva Y
+                    MovimientoRobot.MovimientoHorizontal(ROBOT, ROBOT.Pose().ToTxyzRxyz()[0], Math.Sqrt(Math.Pow(390, 2) - Math.Pow((ROBOT.Pose().ToTxyzRxyz()[0]), 2)));
+
+                    // Calculamos grados de movimiento en función de pos actual
+                    double x = ROBOT.Pose().ToTxyzRxyz()[0];
+                    double y = ROBOT.Pose().ToTxyzRxyz()[1];
+                    double alpha = Utils.RadiansToDegrees(Math.Asin((Utils.EuclideanDistance(x, y, caja.X, caja.Y) / 2) / 390)) * 2; // Valor siempre de 0 a 180
+
+                    // Mediante la ecuacion de la recta determinar el signo de alpha
+                    alpha *= Utils.GiroPosNeg(x, y, caja.X, caja.Y);
+
+                    // Movimiento circular: las 3 cajas en su radio
+                    MovimientoRobot.MoverBase(ROBOT, alpha);
+
+                    // TODO: dejar piezas (asegurar todas dentro)
+                    foreach (Pieza p in piezas_mov)
+                    {
+                        p.Caja = caja_id;
+                        p.Item.setParent(caja.Item);
+                    }
+
+                    // Ajustamos posicion para tener orientacion de herramienta en 0º y en la zona de piezas
+                    ROBOT.MoveJ(new double[] { 90, -90, -90, -90, 90, 0 });
+
+                    UpdateLista();
                 }
-
-
-                // Deshacemos giro de la base
-                MovimientoRobot.MoverBase(ROBOT, -1*alpha);
-            }catch(Exception excp)
+            }
+            catch(Exception excp)
             {
                 notifybar.Text = "El robot no se pudo mover a la posición " + excp.Message;
             }
