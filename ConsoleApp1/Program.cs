@@ -20,7 +20,7 @@ namespace ConsoleApp1
             List<Pieza> piezas = t.ExtraerPiezas();
             foreach (Pieza p in piezas)
             {
-                Console.WriteLine(p.X + " " + p.Y);
+                Console.WriteLine(p.Ventosas);
             }
             Console.ReadLine();
         }

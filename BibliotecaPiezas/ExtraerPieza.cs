@@ -31,7 +31,7 @@ namespace BibliotecaPiezas
                 //values.Add((long)Math.Pow(2, p.Alto)); // Con crecimiento exponencial damos preferencia a las mas altas para evitar choques
                 values.Add(p.Alto);
                 //values.Add(1);
-                sizes.Add(p.Area);
+                sizes.Add(p.Ventosas);
                 piezas_validas.Add(p.EnSimulador && !p.Recogida);
             }
             long r = BestRecursive(piezas.Count, kVentosas);

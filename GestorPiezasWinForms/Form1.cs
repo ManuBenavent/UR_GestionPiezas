@@ -64,13 +64,23 @@ namespace GestorPiezasWinForms
                     ROBOT.MoveC(new double[] { 40, -90, -90, -45, 90, 0 }, new double[] { 90, -90, -90, -90, 90, 0 });
 
                     VENTOSA = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Ventosa-Tool.stl", ROBOT);
-                    VENTOSA.setPoseTool(Mat.transl(0, 0, 50));
-
-                    Ventosas.Add(ROBOT.AddTool(Mat.transl(60,0,50), "ventosa1"));
-                    Ventosas.Add(ROBOT.AddTool(Mat.transl(30, 0, 50), "ventosa2"));
-                    Ventosas.Add(ROBOT.AddTool(Mat.transl(-30, 0, 50), "ventosa3"));
-                    Ventosas.Add(ROBOT.AddTool(Mat.transl(-60, 0, 50), "ventosa4"));
+                    VENTOSA.setPoseTool(Mat.transl(0, 0, 75));
                     
+                    Ventosas.Add(ROBOT.AddTool(Mat.transl(60,0,75), "ventosa1"));
+                    Ventosas[0].setVisible(false);
+                    Ventosas.Add(ROBOT.AddTool(Mat.transl(20, 0, 75), "ventosa2"));
+                    Ventosas[1].setVisible(false);
+                    Ventosas.Add(ROBOT.AddTool(Mat.transl(-20, 0, 75), "ventosa3"));
+                    Ventosas[2].setVisible(false);
+                    Ventosas.Add(ROBOT.AddTool(Mat.transl(-60, 0, 75), "ventosa4"));
+                    Ventosas[3].setVisible(false);
+                    Ventosas.Add(ROBOT.AddTool(Mat.transl(40, 0, 75), "ventosa1_2"));
+                    Ventosas[4].setVisible(false);
+                    Ventosas.Add(ROBOT.AddTool(Mat.transl(0, 0, 75), "ventosa2_3"));
+                    Ventosas[5].setVisible(false);
+                    Ventosas.Add(ROBOT.AddTool(Mat.transl(-40, 0, 75), "ventosa3_4"));
+                    Ventosas[6].setVisible(false);
+
                     RoboDK.Item item = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\Pieza.stl", ROBOT_BASE);
                     double[] scale = new double[3] { 1500, 1500 , 0 };
                     item.Scale(scale);
@@ -315,7 +325,15 @@ namespace GestorPiezasWinForms
                     // Oriento la herramienta
                     MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion);
 
-                    ROBOT.setTool(Ventosas[ventosa_id]);
+                    // Selecciono posicionamiento herramienta adecuado
+                    switch (pieza.Ventosas)
+                    {
+                        case 1: ROBOT.setTool(Ventosas[ventosa_id]); break;
+                        case 2: ROBOT.setTool(Ventosas[4 + ventosa_id]); break;
+                        case 3: ROBOT.setTool(Ventosas[(ventosa_id == 0) ? 1 : 2]); break;
+                        // case 4: tool central por lo que no se modifica
+                    }
+
                     // Encima de la pieza
                     MovimientoRobot.MovimientoHorizontal(ROBOT, pieza.X, pieza.Y);
                     
@@ -335,7 +353,7 @@ namespace GestorPiezasWinForms
                     MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion, true);
 
                     pieza.Recogida = true;
-                    ventosa_id++;
+                    ventosa_id += pieza.Ventosas;
                 }
                 ROBOT.setTool(VENTOSA);
                 if (piezas_mov.Count > 0)
@@ -362,7 +380,7 @@ namespace GestorPiezasWinForms
                     // TODO: dejar piezas (asegurar todas dentro)
                     foreach (Pieza p in piezas_mov)
                     {
-                        p.Caja = caja_id;
+                        p.Caja = caja_id + 1;
                         p.Item.setParent(caja.Item);
                     }
 

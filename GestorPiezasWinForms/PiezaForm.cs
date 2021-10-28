@@ -38,6 +38,7 @@ namespace GestorPiezasWinForms
             textBox_Largo.Text = pieza.Largo.ToString();
             textBox_Alto.Text = pieza.Alto.ToString();
             textBox_Orientacion.Text = pieza.Orientacion.ToString();
+            label8.Text = "Ventosas: " + pieza.Ventosas;
             if (pieza.EnSimulador)
             {
                 if (pieza.Recogida)
@@ -67,6 +68,7 @@ namespace GestorPiezasWinForms
             pieza.Alto = int.Parse(textBox_Alto.Text);
             pieza.Largo = int.Parse(textBox_Largo.Text);
             pieza.Orientacion = int.Parse(textBox_Orientacion.Text);
+            label8.Text = "Ventosas: " + pieza.Ventosas;
         }
 
         private void textBox_Validating(object sender, CancelEventArgs e)

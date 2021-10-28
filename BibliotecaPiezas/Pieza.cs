@@ -35,16 +35,15 @@ namespace BibliotecaPiezas {
         private int Radio { get { return Math.Max(Ancho, Largo) + 10; } }
 
 
-        private const int kSUPERFICIE_1_VENTOSA = 1600; 
-        private const int kSUPERFICIE_2_VENTOSA = 60;// TODO: determinar en funcion del tamaño
-        private const int kSUPERFICIE_3_VENTOSA = 70;
+        private const int ANCHO_1_VENTOSA = 35; 
+        private const int ANCHO_2_VENTOSA = 70;
+        private const int ANCHO_3_VENTOSA = 105;
         /// <summary>Determina el numero de ventosas que se necesitan para la pieza</summary>
-        internal int Area { get
+        public int Ventosas { get
             {
-                int area = Ancho * Largo;
-                if (area <= kSUPERFICIE_1_VENTOSA) return 1;
-                else if (area <= kSUPERFICIE_2_VENTOSA) return 2;
-                else if (area <= kSUPERFICIE_3_VENTOSA) return 3;
+                if (Ancho <= ANCHO_1_VENTOSA) return 1;
+                else if (Ancho <= ANCHO_2_VENTOSA) return 2;
+                else if (Ancho <= ANCHO_3_VENTOSA) return 3;
                 else return 4;
             } }
         

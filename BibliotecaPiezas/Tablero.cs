@@ -12,8 +12,12 @@ namespace BibliotecaPiezas
     public class Tablero
     {
         public List<Pieza> Piezas { get; }
-        private const int MIN_LADO = 40; //TODO: corregir tamaños
-        private const int MAX_LADO = 150; // TODO: valor problematico para crecimiento exponencial de la altura
+        private const int MIN_ANCHO = 35;
+        private const int MAX_ANCHO = 140;
+        private const int MIN_LARGO = 35;
+        private const int MAX_LARGO = 70;
+        private const int MIN_ALTURA = 20;
+        private const int MAX_ALTURA = 50;
         private const int MIN_X = -280;
         private const int MIN_Y = 150;
         private const int MAX_X = 280;
@@ -43,8 +47,7 @@ namespace BibliotecaPiezas
                 int intentos = 0;
                 do
                 {
-                    //p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MIN_LADO, MAX_LADO), rnd.Next(MAX_ORIENTACION), ID_PIEZA);
-                    p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), 40,40, 40, rnd.Next(MAX_ORIENTACION), ID_PIEZA);
+                    p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), rnd.Next(MIN_ANCHO, MAX_ANCHO), rnd.Next(MIN_LARGO, MAX_LARGO), rnd.Next(MIN_ALTURA, MAX_ALTURA), rnd.Next(MAX_ORIENTACION), ID_PIEZA);
                     intentos++;
                     if (intentos > 20)
                     {
@@ -162,7 +165,7 @@ namespace BibliotecaPiezas
         public List<Pieza> ExtraerPiezas()
         {
             List<int> ids = ExtraerPieza.BestSolution(Piezas);
-            IEnumerable<Pieza> query = Piezas.Where((pieza, index) => ids.Contains(index));
+            IEnumerable<Pieza> query = Piezas.Where((pieza, index) => ids.Contains(index)).OrderBy(pieza => pieza.Alto);
             return query.ToList(); //TODO: ordenar por alturas
         }
 
