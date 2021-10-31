@@ -136,10 +136,26 @@ namespace GestorPiezasWinForms
                     Interaction.MsgBox("El valor debe ser un número entero.", MsgBoxStyle.Critical, Title: "Generación de piezas");
                 }
             } while (parsed_val == -1);
-            if (tablero.GenerarPiezas(parsed_val))
+
+            Task<int> t = Task.Run(() =>
+            {
+                return tablero.GenerarPiezas(parsed_val);
+            });
+            try
+            {
+                t.Wait();
+            }
+            catch (AggregateException) { }
+
+            int cantidad = t.Result;
+            if (cantidad > 0)
+            {
+                if (cantidad < parsed_val) // Se han generado menor cantidad de piezas de las solicitadas
+                    Interaction.MsgBox("No se ha podido generar el número de piezas solicitado, el máximo posible ha sido: " + cantidad, MsgBoxStyle.Information, Title: "Generación de piezas");
                 UpdateLista();
+            }
             else
-                Interaction.MsgBox("Se han producido demasiadas colisiones, introduce un número menor de piezas.", MsgBoxStyle.Critical, Title: "Generación de piezas");
+                Interaction.MsgBox("Se han superado el número máximo de intentos para incluir una pieza en el tablero.", MsgBoxStyle.Critical, Title: "Generación de piezas");
 
         }
 
@@ -316,6 +332,37 @@ namespace GestorPiezasWinForms
         // Recoger piezas
         private void button4_Click(object sender, EventArgs e)
         {
+            Task t = Task.Run(() =>
+            {
+                RecogerPiezas();
+            });
+            try
+            {
+                t.Wait();
+            }
+            catch (AggregateException) { }
+            UpdateLista();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Task t = Task.Run(() =>
+            {
+                do
+                {
+                    RecogerPiezas();
+                } while (tablero.PiezasPendientes);
+            });
+            try
+            {
+                t.Wait();
+            }
+            catch (AggregateException) { }
+            UpdateLista();
+        }
+
+        private void RecogerPiezas()
+        {
             try
             {
                 List<Pieza> piezas_mov = tablero.ExtraerPiezas();
@@ -324,7 +371,7 @@ namespace GestorPiezasWinForms
                 foreach (Pieza pieza in piezas_mov)
                 {
                     if (pieza.EnZonaAmarilla)
-                    if (pieza.EnZonaAmarilla && ((pieza_id - 1) < 0 || !piezas_mov[pieza_id - 1].EnZonaAmarilla))
+                        if (pieza.EnZonaAmarilla && ((pieza_id - 1) < 0 || !piezas_mov[pieza_id - 1].EnZonaAmarilla))
                             MovimientoRobot.ZonaAmarilla(ROBOT);
                     // Oriento la herramienta
                     MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion);
@@ -335,17 +382,17 @@ namespace GestorPiezasWinForms
                         case 1: ROBOT.setTool(Ventosas[ventosa_id]); break;
                         case 2: ROBOT.setTool(Ventosas[4 + ventosa_id]); break;
                         case 3: ROBOT.setTool(Ventosas[(ventosa_id == 0) ? 1 : 2]); break;
-                        // case 4: tool central por lo que no se modifica
+                            // case 4: tool central por lo que no se modifica
                     }
 
                     // Encima de la pieza
                     MovimientoRobot.MovimientoHorizontal(ROBOT, pieza.X, pieza.Y);
-                    
+
 
                     // Bajo a por la pieza
                     double altura_previa = ROBOT.Pose().ToTxyzRxyz()[2];
                     MovimientoRobot.MovimientoVertical(ROBOT, pieza.Alto + 2); //2mm de margen para evitar la colisión
-                    
+
                     // TODO: recoger pieza con ventosa correcta
                     System.Threading.Thread.Sleep(500); // Medio segundo de espera para que se vea claro
                     pieza.Item.setParentStatic(Ventosas[ventosa_id]);
@@ -360,7 +407,7 @@ namespace GestorPiezasWinForms
                     ventosa_id += pieza.Ventosas;
 
                     if (pieza.EnZonaAmarilla && ((pieza_id + 1) >= piezas_mov.Count || !piezas_mov[pieza_id + 1].EnZonaAmarilla))
-                            MovimientoRobot.ZonaVerde(ROBOT);
+                        MovimientoRobot.ZonaVerde(ROBOT);
 
                     pieza_id++;
                 }
@@ -395,11 +442,9 @@ namespace GestorPiezasWinForms
 
                     // Ajustamos posicion para tener orientacion de herramienta en 0º y en la zona de piezas
                     ROBOT.MoveJ(new double[] { 90, -90, -90, -90, 90, 0 });
-
-                    UpdateLista();
                 }
             }
-            catch(Exception excp)
+            catch (Exception excp)
             {
                 notifybar.Text = "El robot no se pudo mover a la posición " + excp.Message;
             }

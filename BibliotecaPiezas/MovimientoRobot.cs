@@ -38,7 +38,9 @@ namespace BibliotecaPiezas
             }
             catch (RoboDK.RDKException)
             {
-                throw new Exception(movement_pose.ToString());
+                //throw new Exception(movement_pose.ToString());
+                ROBOT.MoveJ(new double[] { 90, -90, -90, -90, 90, 0 });
+                MovimientoHorizontal(ROBOT, x, y);
             }
         }
 

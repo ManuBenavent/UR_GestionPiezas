@@ -42,16 +42,17 @@ namespace GestorPiezasWinForms
             this.label1 = new System.Windows.Forms.Label();
             this.panelPiezas = new System.Windows.Forms.Panel();
             this.button4 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
             this.groupRoboDKWindow.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(510, 11);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button1.Location = new System.Drawing.Point(382, 25);
+            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(140, 64);
+            this.button1.Size = new System.Drawing.Size(105, 52);
             this.button1.TabIndex = 0;
             this.button1.Text = "Generar piezas aleatorias";
             this.button1.UseVisualStyleBackColor = true;
@@ -59,10 +60,10 @@ namespace GestorPiezasWinForms
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(218, 60);
-            this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button2.Location = new System.Drawing.Point(165, 9);
+            this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(140, 35);
+            this.button2.Size = new System.Drawing.Size(105, 35);
             this.button2.TabIndex = 1;
             this.button2.Text = "Guardar tablero";
             this.button2.UseVisualStyleBackColor = true;
@@ -70,10 +71,10 @@ namespace GestorPiezasWinForms
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(218, 11);
-            this.button3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button3.Location = new System.Drawing.Point(165, 48);
+            this.button3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(140, 43);
+            this.button3.Size = new System.Drawing.Size(105, 35);
             this.button3.TabIndex = 2;
             this.button3.Text = "Cargar tablero";
             this.button3.UseVisualStyleBackColor = true;
@@ -83,11 +84,11 @@ namespace GestorPiezasWinForms
             // 
             this.groupRoboDKWindow.Controls.Add(this.ocultarRoboDK_radioButton);
             this.groupRoboDKWindow.Controls.Add(this.mostrarRoboDK_radioButton);
-            this.groupRoboDKWindow.Location = new System.Drawing.Point(12, 11);
-            this.groupRoboDKWindow.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupRoboDKWindow.Location = new System.Drawing.Point(9, 9);
+            this.groupRoboDKWindow.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupRoboDKWindow.Name = "groupRoboDKWindow";
-            this.groupRoboDKWindow.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupRoboDKWindow.Size = new System.Drawing.Size(200, 84);
+            this.groupRoboDKWindow.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupRoboDKWindow.Size = new System.Drawing.Size(150, 68);
             this.groupRoboDKWindow.TabIndex = 3;
             this.groupRoboDKWindow.TabStop = false;
             this.groupRoboDKWindow.Text = "Modo visualización";
@@ -95,10 +96,10 @@ namespace GestorPiezasWinForms
             // ocultarRoboDK_radioButton
             // 
             this.ocultarRoboDK_radioButton.AutoSize = true;
-            this.ocultarRoboDK_radioButton.Location = new System.Drawing.Point(5, 49);
-            this.ocultarRoboDK_radioButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ocultarRoboDK_radioButton.Location = new System.Drawing.Point(4, 40);
+            this.ocultarRoboDK_radioButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ocultarRoboDK_radioButton.Name = "ocultarRoboDK_radioButton";
-            this.ocultarRoboDK_radioButton.Size = new System.Drawing.Size(132, 21);
+            this.ocultarRoboDK_radioButton.Size = new System.Drawing.Size(103, 17);
             this.ocultarRoboDK_radioButton.TabIndex = 1;
             this.ocultarRoboDK_radioButton.TabStop = true;
             this.ocultarRoboDK_radioButton.Text = "Ocultar RoboDK";
@@ -108,10 +109,10 @@ namespace GestorPiezasWinForms
             // mostrarRoboDK_radioButton
             // 
             this.mostrarRoboDK_radioButton.AutoSize = true;
-            this.mostrarRoboDK_radioButton.Location = new System.Drawing.Point(7, 22);
-            this.mostrarRoboDK_radioButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.mostrarRoboDK_radioButton.Location = new System.Drawing.Point(5, 18);
+            this.mostrarRoboDK_radioButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.mostrarRoboDK_radioButton.Name = "mostrarRoboDK_radioButton";
-            this.mostrarRoboDK_radioButton.Size = new System.Drawing.Size(134, 21);
+            this.mostrarRoboDK_radioButton.Size = new System.Drawing.Size(104, 17);
             this.mostrarRoboDK_radioButton.TabIndex = 0;
             this.mostrarRoboDK_radioButton.TabStop = true;
             this.mostrarRoboDK_radioButton.Text = "Mostrar RoboDK";
@@ -123,25 +124,24 @@ namespace GestorPiezasWinForms
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.notifybar});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 433);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 351);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 13, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(811, 26);
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
+            this.statusStrip1.Size = new System.Drawing.Size(608, 22);
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // notifybar
             // 
             this.notifybar.Name = "notifybar";
-            this.notifybar.Size = new System.Drawing.Size(107, 20);
+            this.notifybar.Size = new System.Drawing.Size(86, 17);
             this.notifybar.Text = "Notificaciones:";
             // 
             // piezasToRoboDK
             // 
-            this.piezasToRoboDK.Location = new System.Drawing.Point(657, 11);
-            this.piezasToRoboDK.Margin = new System.Windows.Forms.Padding(4);
+            this.piezasToRoboDK.Location = new System.Drawing.Point(493, 25);
             this.piezasToRoboDK.Name = "piezasToRoboDK";
-            this.piezasToRoboDK.Size = new System.Drawing.Size(140, 63);
+            this.piezasToRoboDK.Size = new System.Drawing.Size(105, 51);
             this.piezasToRoboDK.TabIndex = 5;
             this.piezasToRoboDK.Text = "Añadir todas las piezas al tablero";
             this.piezasToRoboDK.UseVisualStyleBackColor = true;
@@ -150,35 +150,50 @@ namespace GestorPiezasWinForms
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 97);
+            this.label1.Location = new System.Drawing.Point(12, 79);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(103, 17);
+            this.label1.Size = new System.Drawing.Size(77, 13);
             this.label1.TabIndex = 6;
             this.label1.Text = "Lista de piezas";
             // 
             // panelPiezas
             // 
             this.panelPiezas.AutoScroll = true;
-            this.panelPiezas.Location = new System.Drawing.Point(17, 117);
+            this.panelPiezas.Location = new System.Drawing.Point(13, 95);
+            this.panelPiezas.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panelPiezas.Name = "panelPiezas";
-            this.panelPiezas.Size = new System.Drawing.Size(780, 313);
+            this.panelPiezas.Size = new System.Drawing.Size(585, 254);
             this.panelPiezas.TabIndex = 7;
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(365, 13);
+            this.button4.Location = new System.Drawing.Point(271, 9);
+            this.button4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(139, 61);
+            this.button4.Size = new System.Drawing.Size(107, 35);
             this.button4.TabIndex = 8;
             this.button4.Text = "Recoger piezas";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(271, 48);
+            this.button5.Margin = new System.Windows.Forms.Padding(2);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(107, 35);
+            this.button5.TabIndex = 9;
+            this.button5.Text = "Recoger todas las piezas";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(811, 459);
+            this.ClientSize = new System.Drawing.Size(608, 373);
+            this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.panelPiezas);
             this.Controls.Add(this.label1);
@@ -190,7 +205,7 @@ namespace GestorPiezasWinForms
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Gestion de piezas";
@@ -219,6 +234,7 @@ namespace GestorPiezasWinForms
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panelPiezas;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button5;
     }
 }
 

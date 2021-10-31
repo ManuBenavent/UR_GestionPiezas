@@ -13,14 +13,17 @@ namespace ConsoleApp1
         {
             Tablero t = new Tablero();
             t.RecuperarTablero(@"C:\Users\mbena\Downloads\test.xml");
+            
             foreach (Pieza p in t.Piezas)
             {
                 p.EnSimulador = true;
             }
+            
             List<Pieza> piezas = t.ExtraerPiezas();
+            Console.WriteLine("-----------");
             foreach (Pieza p in piezas)
             {
-                Console.WriteLine(p.Ventosas);
+                Console.WriteLine(p.Ventosas + "   ID: " + p.ID);
             }
             Console.ReadLine();
         }

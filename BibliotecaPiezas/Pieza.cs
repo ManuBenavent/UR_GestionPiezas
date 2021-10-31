@@ -64,7 +64,7 @@ namespace BibliotecaPiezas {
         /// <param name="alto"></param>
         /// <param name="largo"></param>
         /// <param name="Orientacion"></param>
-        internal Pieza (int x, int y, int ancho, int alto, int largo, int orientacion, int ID)
+        internal Pieza (int x, int y, int ancho, int largo, int alto, int orientacion, int ID)
         {
             X = x;
             Y = y;

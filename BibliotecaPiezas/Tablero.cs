@@ -18,12 +18,23 @@ namespace BibliotecaPiezas
         private const int MAX_LARGO = 70;
         private const int MIN_ALTURA = 20;
         private const int MAX_ALTURA = 50;
-        private const int MIN_X = -280;
-        private const int MIN_Y = 150;
-        private const int MAX_X = 280;
-        private const int MAX_Y = 280;
+        private const int MIN_X = -400;
+        private const int MIN_Y = 0;
+        private const int MAX_X = 400;
+        private const int MAX_Y = 400;
         private const int MAX_ORIENTACION = 180;
+        private const int MIN_DIST = 150;
+        private const int MAX_DIST = 400; // MAX ALCANCE - MAX ANCHO = 410 => 400
+        private const int MAX_TRIES = 150;
         private static int ID_PIEZA;
+        public bool PiezasPendientes { get { 
+                foreach (Pieza p in Piezas)
+                {
+                    if (p.EnSimulador && !p.Recogida)
+                        return true;
+                }
+                return false;
+            } }
 
         public Tablero()
         {
@@ -35,7 +46,7 @@ namespace BibliotecaPiezas
         /// Genera tantas piezas como indica el parámetro sin que colisionen entre sí de tamaño variable.
         /// </summary>
         /// <param name="n">Número de piezas.</param>
-        public bool GenerarPiezas (int n)
+        public int GenerarPiezas (int n)
         {
             int prev_id = ID_PIEZA;
             Console.WriteLine("Generando piezas");
@@ -49,18 +60,26 @@ namespace BibliotecaPiezas
                 {
                     p = new Pieza(rnd.Next(MIN_X, MAX_X), rnd.Next(MIN_Y, MAX_Y), rnd.Next(MIN_ANCHO, MAX_ANCHO), rnd.Next(MIN_LARGO, MAX_LARGO), rnd.Next(MIN_ALTURA, MAX_ALTURA), rnd.Next(MAX_ORIENTACION), ID_PIEZA);
                     intentos++;
-                    if (intentos > 20)
+                    if (intentos > MAX_TRIES)
                     {
-                        ID_PIEZA = prev_id;
-                        return false;
+                        //ID_PIEZA = prev_id;
+                        Piezas.AddRange(nuevas);
+                        return nuevas.Count;
                     }
-                } while (ColisionaTablero(p, nuevas));
+                } while (ColisionaTablero(p, nuevas) || !InsideTablero(p));
+
                 ID_PIEZA++;
                 nuevas.Add(p);
             }
             Piezas.AddRange(nuevas);
             Console.WriteLine("Piezas generadas");
-            return true;
+            return nuevas.Count;
+        }
+
+        public bool InsideTablero(Pieza p)
+        {
+            double dist = Utils.EuclideanDistance(0, 0, p.X, p.Y);
+            return (dist <= MAX_DIST) && (dist >= MIN_DIST);
         }
 
         /// <summary>
@@ -166,6 +185,7 @@ namespace BibliotecaPiezas
         {
             List<int> ids = ExtraerPieza.BestSolution(Piezas);
             IEnumerable<Pieza> query = Piezas.Where((pieza, index) => ids.Contains(index)).OrderBy(pieza => pieza.Alto);
+            Console.WriteLine(ids.Count);
             return query.ToList(); //TODO: ordenar por alturas
         }
 
