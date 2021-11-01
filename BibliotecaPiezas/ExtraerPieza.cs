@@ -8,9 +8,9 @@ namespace BibliotecaPiezas
 {
     internal static class ExtraerPieza
     {
-        private static Dictionary<KeyValuePair<int, int>, decimal> almacen;
+        private static Dictionary<KeyValuePair<int, int>, long> almacen;
         private static List<bool> piezas_validas;
-        private static List<decimal> values;
+        private static List<long> values;
         private static List<int> sizes;
         private const int kVentosas = 4;
 
@@ -22,23 +22,23 @@ namespace BibliotecaPiezas
         internal static List<int> BestSolution (List<Pieza> piezas)
         {
             // Inicializacion de valores
-            almacen = new Dictionary<KeyValuePair<int, int>, decimal>();
-            values = new List<decimal>();
+            almacen = new Dictionary<KeyValuePair<int, int>, long>();
+            values = new List<long>();
             sizes = new List<int>();
             piezas_validas = new List<bool>();
             foreach (Pieza p in piezas)
             {
-                values.Add((decimal)Math.Pow(2, p.Alto/5.0)); // Con crecimiento exponencial damos preferencia a las mas altas para evitar choques
+                values.Add((long)Math.Pow(2, p.Alto)); // Con crecimiento exponencial damos preferencia a las mas altas para evitar choques
                 sizes.Add(p.Ventosas);
                 piezas_validas.Add(p.EnSimulador && !p.Recogida);
             }
-            decimal r = BestRecursive(piezas.Count, kVentosas);
+            long r = BestRecursive(piezas.Count, kVentosas);
             List<int> sol = new List<int>();
             ParseSol(values.Count, kVentosas, r, sol);
             return sol;
         }
 
-        private static decimal BestRecursive (int iterator, int n)
+        private static long BestRecursive (int iterator, int n)
         {
             if (n <= 0 || iterator <= 0)
             {
@@ -49,7 +49,7 @@ namespace BibliotecaPiezas
             {
                 return almacen[key];
             }
-            decimal res;
+            long res;
             if (n - sizes[iterator - 1] >= 0 && piezas_validas[iterator - 1])
                 res = Math.Max(BestRecursive(iterator - 1, n - sizes[iterator - 1]) + values[iterator - 1], BestRecursive(iterator - 1, n));
             else 
@@ -58,7 +58,7 @@ namespace BibliotecaPiezas
             return res;
         }
 
-        private static bool ParseSol(int it, int n, decimal total, List<int> sol)
+        private static bool ParseSol(int it, int n, long total, List<int> sol)
         {
             if (n < 0 || total < 0) return false;
             if (it == 0 || n == 0) return true;
@@ -66,13 +66,13 @@ namespace BibliotecaPiezas
             if (piezas_validas[it - 1])
             {
                 // NO COGIDO
-                decimal s1 = 0;
+                long s1 = 0;
                 KeyValuePair<int, int> key1 = new KeyValuePair<int, int>(it, n);
                 if (almacen.ContainsKey(key1))
                     s1 = almacen[key1];
 
                 // COGIDO
-                decimal s2 = values[it - 1];
+                long s2 = values[it - 1];
                 KeyValuePair<int, int> key2 = new KeyValuePair<int, int>(it, n - sizes[it - 1]);
                 if (almacen.ContainsKey(key2))
                     s2 += almacen[key2];
@@ -80,8 +80,7 @@ namespace BibliotecaPiezas
                 // ELIJO
                 if (s2 >= s1)
                 {
-                    decimal asdf = total - values[it - 1];
-                    if (ParseSol(it - 1, n - sizes[it - 1], asdf, sol))
+                    if (ParseSol(it - 1, n - sizes[it - 1], total - values[it - 1], sol))
                         sol.Add(it - 1);
                     else
                         ParseSol(it - 1, n, total, sol);
