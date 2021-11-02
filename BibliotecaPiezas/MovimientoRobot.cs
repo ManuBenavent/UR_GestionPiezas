@@ -64,7 +64,6 @@ namespace BibliotecaPiezas
         public static void OrientarVentosa (RoboDK.Item ROBOT, double grados, bool reverse = false)
         {
             double[] joints = ROBOT.Joints();
-            double prev = joints[5];
             if (reverse)
                 joints[5] += grados;
             else

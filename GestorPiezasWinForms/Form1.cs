@@ -60,6 +60,8 @@ namespace GestorPiezasWinForms
                     // attempt to auto select the robot:
                     //SelectRobot();
                     ROBOT = RDK.AddFile(Utils.AssemblyDirectory + @"\Resources\UR3.robot");
+                    ROBOT.setConnectionParams("169.254.43.8", 30000, "/programs/", "root", "easybot");
+                    
                     ROBOT_BASE = RDK.getItem("UR3 Base");
                     ROBOT.MoveC(new double[] { 40, -90, -90, -45, 90, 0 }, new double[] { 90, -90, -90, -90, 90, 0 });
 
@@ -393,7 +395,6 @@ namespace GestorPiezasWinForms
                     double altura_previa = ROBOT.Pose().ToTxyzRxyz()[2];
                     MovimientoRobot.MovimientoVertical(ROBOT, pieza.Alto + 2); //2mm de margen para evitar la colisión
 
-                    // TODO: recoger pieza con ventosa correcta
                     System.Threading.Thread.Sleep(500); // Medio segundo de espera para que se vea claro
                     pieza.Item.setParentStatic(Ventosas[ventosa_id]);
 
@@ -401,7 +402,7 @@ namespace GestorPiezasWinForms
                     MovimientoRobot.MovimientoVertical(ROBOT, altura_previa);
 
                     // Reorientamos ventosa
-                    MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion, true);
+                    MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion, reverse: true);
 
                     pieza.Recogida = true;
                     ventosa_id += pieza.Ventosas;
@@ -447,6 +448,30 @@ namespace GestorPiezasWinForms
             catch (Exception excp)
             {
                 notifybar.Text = "El robot no se pudo mover a la posición " + excp.Message;
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (ROBOT.ConnectedState() != RoboDK.ROBOTCOM_READY)
+            {
+                RDK.Finish(); // Detenemos la ejecucion
+                if (ROBOT.Connect())
+                {
+                    RDK.setRunMode(RoboDK.RUNMODE_RUN_ROBOT);
+                    ROBOT.MoveJ(new double[] { 90, -90, -90, -90, 90, 0 }); // Establecemos al robot en posicion conocida
+                    notifybar.Text = "Conexión con el robot realizada con éxito";
+                }
+                else
+                {
+                    Interaction.MsgBox("No se pudo conectar con robot UR3 en 169.254.43.8:30000.", MsgBoxStyle.Critical, Title: "Conexión con robot");
+                }
+            }
+            else
+            {
+                ROBOT.Disconnect();
+                RDK.Finish();
+                RDK.setRunMode(RoboDK.RUNMODE_SIMULATE);
             }
         }
     }
