@@ -474,5 +474,17 @@ namespace GestorPiezasWinForms
                 RDK.setRunMode(RoboDK.RUNMODE_SIMULATE);
             }
         }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ROBOT.MoveJ(new double[] { 90, -90, -90, -90, 90, 0 }); // Establecemos al robot en posicion conocida
+            }
+            catch(Exception)
+            {
+                notifybar.Text = "No se pudo mover el robot a la posición inicial";
+            }
+        }
     }
 }
