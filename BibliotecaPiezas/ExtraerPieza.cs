@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace BibliotecaPiezas
 {
+    /// <summary>
+    /// Clase estática que mediante el método BestSolution y el algoritmo de memoización para el problema de la mochila calcula el mejor conjunto de piezas a extraer con la herramienta
+    /// </summary>
     internal static class ExtraerPieza
     {
         private static Dictionary<KeyValuePair<int, int>, long> almacen;
@@ -37,7 +40,12 @@ namespace BibliotecaPiezas
             ParseSol(values.Count, kVentosas, r, sol);
             return sol;
         }
-
+        /// <summary>
+        /// Calcula la solución
+        /// </summary>
+        /// <param name="iterator">Máximo número de piezas</param>
+        /// <param name="n">Máximo número de ventosas</param>
+        /// <returns></returns>
         private static long BestRecursive (int iterator, int n)
         {
             if (n <= 0 || iterator <= 0)
@@ -58,6 +66,14 @@ namespace BibliotecaPiezas
             return res;
         }
 
+        /// <summary>
+        /// Extrae los IDs de las piezas del almacén a partir de la solución
+        /// </summary>
+        /// <param name="it">Máximo número de piezas</param>
+        /// <param name="n">Número de ventosas</param>
+        /// <param name="total">Solución</param>
+        /// <param name="sol">Lista de IDs</param>
+        /// <returns></returns>
         private static bool ParseSol(int it, int n, long total, List<int> sol)
         {
             if (n < 0 || total < 0) return false;

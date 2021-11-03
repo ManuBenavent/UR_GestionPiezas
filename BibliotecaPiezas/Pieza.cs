@@ -32,6 +32,9 @@ namespace BibliotecaPiezas {
         public int Caja { get; set; }
         ///<summary>ID de la pieza</summary>
         public int ID { get; set; }
+        /// <summary>
+        /// Devuelve el radio de una pieza en el que no puede haber ninguna otra pieza
+        /// </summary>
         private int Radio { get { return Math.Max(Ancho, Largo) + 10; } }
 
 
@@ -47,6 +50,9 @@ namespace BibliotecaPiezas {
                 else return 4;
         } }
 
+        /// <summary>
+        /// Calcula si una pieza está en zona amarilla
+        /// </summary>
         public bool EnZonaAmarilla { get
         {
                 return Utils.EuclideanDistance(0, 0, X, Y) <= 200;
