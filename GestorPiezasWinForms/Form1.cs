@@ -139,9 +139,12 @@ namespace GestorPiezasWinForms
                 }
             } while (parsed_val == -1);
 
+            DialogResult dialogResult = MessageBox.Show("¿Generar piezas en zona amarilla?", "Generación de piezas", MessageBoxButtons.YesNo);
+            bool amarillas = dialogResult == DialogResult.Yes;
+
             Task<int> t = Task.Run(() =>
             {
-                return tablero.GenerarPiezas(parsed_val);
+                return tablero.GenerarPiezas(parsed_val, amarillas);
             });
             try
             {
@@ -384,8 +387,8 @@ namespace GestorPiezasWinForms
                     double altura_previa = ROBOT.Pose().ToTxyzRxyz()[2];
                     if (pieza.EnZonaAmarilla )
                     {
-                        if ((pieza_id - 1) < 0 || !piezas_mov[pieza_id - 1].EnZonaAmarilla)
-                            MovimientoRobot.ZonaAmarilla(ROBOT);
+                        // Aseguramos una posición correcta para realizar sin colisiones los movimientos horizontales
+                        MovimientoRobot.ZonaAmarilla(ROBOT);
                         // Oriento la herramienta
                         MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion);
                         // Encima de la pieza
