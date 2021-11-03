@@ -372,6 +372,12 @@ namespace GestorPiezasWinForms
                 int pieza_id = 0;
                 foreach (Pieza pieza in piezas_mov)
                 {
+                    if (pieza.EnZonaAmarilla)
+                        if (pieza.EnZonaAmarilla && ((pieza_id - 1) < 0 || !piezas_mov[pieza_id - 1].EnZonaAmarilla))
+                            MovimientoRobot.ZonaAmarilla(ROBOT);
+                    // Oriento la herramienta
+                    MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion);
+
                     // Selecciono posicionamiento herramienta adecuado
                     switch (pieza.Ventosas)
                     {
@@ -381,17 +387,26 @@ namespace GestorPiezasWinForms
                             // case 4: tool central por lo que no se modifica
                     }
 
-                    if (pieza.EnZonaAmarilla && ((pieza_id - 1) < 0 || !piezas_mov[pieza_id - 1].EnZonaAmarilla))
-                        MovimientoRobot.ZonaAmarilla(ROBOT);
+                    // Encima de la pieza
+                    MovimientoRobot.MovimientoHorizontal(ROBOT, pieza.X, pieza.Y);
+
+
+                    // Bajo a por la pieza
                     double altura_previa = ROBOT.Pose().ToTxyzRxyz()[2];
-                    RoboDK.Item target = RDK.AddTarget("target");
-                    target.setPose(Mat.transl(pieza.X, pieza.Y, pieza.Alto) * Mat.rotz(Utils.DegreesToRadians(pieza.Orientacion)) * Mat.roty(Utils.DegreesToRadians(-180)));
-                    ROBOT.MoveL(target);
-                    target.Delete();
+                    MovimientoRobot.MovimientoVertical(ROBOT, pieza.Alto + 2); //2mm de margen para evitar la colisión
+
+                    System.Threading.Thread.Sleep(500); // Medio segundo de espera para que se vea claro
                     pieza.Item.setParentStatic(Ventosas[ventosa_id]);
+
+                    // Vuelvo a altura referencia
                     MovimientoRobot.MovimientoVertical(ROBOT, altura_previa);
+
+                    // Reorientamos ventosa
+                    MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion, reverse: true);
+
                     pieza.Recogida = true;
                     ventosa_id += pieza.Ventosas;
+
                     if (pieza.EnZonaAmarilla && ((pieza_id + 1) >= piezas_mov.Count || !piezas_mov[pieza_id + 1].EnZonaAmarilla))
                         MovimientoRobot.ZonaVerde(ROBOT);
 
