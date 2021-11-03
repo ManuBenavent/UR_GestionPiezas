@@ -55,7 +55,7 @@ namespace BibliotecaPiezas {
         /// </summary>
         public bool EnZonaAmarilla { get
         {
-                return Utils.EuclideanDistance(0, 0, X, Y) <= 200;
+                return Utils.EuclideanDistance(0, 0, X, Y) <= 250;
         } }
         
         

@@ -51,8 +51,14 @@ namespace BibliotecaPiezas
             }
             catch (RoboDK.RDKException)
             {
-                //throw new Exception(movement_pose.ToString());
-                ROBOT.MoveJ(new double[] { 90, -90, -90, -90, 90, 0 });
+                double[] joints = ROBOT.Joints();
+                double[] pose = ROBOT.Pose().Pos();
+                joints[0] = (Utils.GiroPosNeg(pose[0],pose[1],x,y)<0)?45:135;
+                //ROBOT.MoveJ(joints);
+                if (zona_amarilla)
+                    ROBOT.MoveJ(movement_pose);
+                else
+                    ROBOT.MoveJ(new double[] { 90, -90, -90, -90, 90, 0 });
                 MovimientoHorizontal(ROBOT, x, y);
             }
         }
