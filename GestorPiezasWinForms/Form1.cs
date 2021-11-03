@@ -372,11 +372,6 @@ namespace GestorPiezasWinForms
                 int pieza_id = 0;
                 foreach (Pieza pieza in piezas_mov)
                 {
-                    if (pieza.EnZonaAmarilla && ((pieza_id - 1) < 0 || !piezas_mov[pieza_id - 1].EnZonaAmarilla))
-                            MovimientoRobot.ZonaAmarilla(ROBOT);
-                    // Oriento la herramienta
-                    //MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion);
-
                     // Selecciono posicionamiento herramienta adecuado
                     switch (pieza.Ventosas)
                     {
@@ -386,17 +381,25 @@ namespace GestorPiezasWinForms
                             // case 4: tool central por lo que no se modifica
                     }
 
-                    // Encima de la pieza
-                    //MovimientoRobot.MovimientoHorizontal(ROBOT, pieza.X, pieza.Y);
-
-
-                    // Bajo a por la pieza
                     double altura_previa = ROBOT.Pose().ToTxyzRxyz()[2];
-                    RoboDK.Item target = RDK.AddTarget("target");
-                    target.setPose(Mat.transl(pieza.X, pieza.Y, pieza.Alto + 2) * Mat.rotz(Utils.DegreesToRadians(pieza.Orientacion)) * Mat.roty(Utils.DegreesToRadians(-180)));
-                    ROBOT.MoveL(target);
-                    target.Delete();
-                    //MovimientoRobot.MovimientoVertical(ROBOT, pieza.Alto + 2); //2mm de margen para evitar la colisión
+                    if (pieza.EnZonaAmarilla )
+                    {
+                        if ((pieza_id - 1) < 0 || !piezas_mov[pieza_id - 1].EnZonaAmarilla)
+                            MovimientoRobot.ZonaAmarilla(ROBOT);
+                        // Oriento la herramienta
+                        MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion);
+                        // Encima de la pieza
+                        MovimientoRobot.MovimientoHorizontal(ROBOT, pieza.X, pieza.Y, true);
+                        // Bajo a por la pieza
+                        MovimientoRobot.MovimientoVertical(ROBOT, pieza.Alto + 2); //2mm de margen para evitar la colisión
+                    }
+                    else
+                    {
+                        RoboDK.Item target = RDK.AddTarget("target");
+                        target.setPose(Mat.transl(pieza.X, pieza.Y, pieza.Alto + 2) * Mat.rotz(Utils.DegreesToRadians(pieza.Orientacion)) * Mat.roty(Utils.DegreesToRadians(-180)));
+                        ROBOT.MoveL(target);
+                        target.Delete();
+                    }
 
                     System.Threading.Thread.Sleep(500); // Medio segundo de espera para que se vea claro
                     pieza.Item.setParentStatic(Ventosas[ventosa_id]);
@@ -404,15 +407,19 @@ namespace GestorPiezasWinForms
                     // Vuelvo a altura referencia
                     MovimientoRobot.MovimientoVertical(ROBOT, altura_previa);
 
-                    // Reorientamos ventosa
-                    //MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion, reverse: true);
+
+                    if (pieza.EnZonaAmarilla)
+                    {
+                        // Reorientamos ventosa
+                        MovimientoRobot.OrientarVentosa(ROBOT, pieza.Orientacion, reverse: true);
+                        if ((pieza_id + 1) >= piezas_mov.Count || !piezas_mov[pieza_id + 1].EnZonaAmarilla)
+                            MovimientoRobot.ZonaVerde(ROBOT);
+                    }
+
+
 
                     pieza.Recogida = true;
                     ventosa_id += pieza.Ventosas;
-
-                    if (pieza.EnZonaAmarilla && ((pieza_id + 1) >= piezas_mov.Count || !piezas_mov[pieza_id + 1].EnZonaAmarilla))
-                        MovimientoRobot.ZonaVerde(ROBOT);
-
                     pieza_id++;
                 }
                 ROBOT.setTool(VENTOSA);

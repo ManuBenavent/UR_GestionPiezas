@@ -23,7 +23,7 @@ namespace BibliotecaPiezas
         private const int MAX_X = 400;
         private const int MAX_Y = 400;
         private const int MAX_ORIENTACION = 180;
-        private const int MIN_DIST = 150;
+        private const int MIN_DIST = 180;
         private const int MAX_DIST = 400; // MAX ALCANCE - MAX ANCHO = 410 => 400
         private const int MAX_TRIES = 150;
         private static int ID_PIEZA;
