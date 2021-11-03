@@ -10,6 +10,11 @@ namespace BibliotecaPiezas
     {
         private static bool MOVE_BLOCKING = true;
 
+        /// <summary>
+        /// Mueve la base del robot los grados indicados
+        /// </summary>
+        /// <param name="ROBOT">Referencia RoboDK del robot</param>
+        /// <param name="grados">Grados a girar</param>
         public static void MoverBase(RoboDK.Item ROBOT, double grados)
         {
             double[] joints = ROBOT.Joints();
@@ -25,7 +30,15 @@ namespace BibliotecaPiezas
             }
         }
 
-        public static void MovimientoHorizontal (RoboDK.Item ROBOT, double x, double y, bool zona_amarilla=false)
+        /// <summary>
+        /// Realiza un movimiento horizontal sobre un plano hasta la posición. 
+        /// Si no consigue realizar el movimiento de una sola vez realiza un movimiento articular hasta 
+        /// una posición central hasta que consigue colocarse en la posición deseada
+        /// </summary>
+        /// <param name="ROBOT">Referencia RoboDK del robot</param>
+        /// <param name="x">posición x</param>
+        /// <param name="y">posición y</param>
+        public static void MovimientoHorizontal (RoboDK.Item ROBOT, double x, double y)
         {
             Mat robot_pose = ROBOT.Pose();
             double[] rob_xyzwpr = robot_pose.ToTxyzRxyz();
@@ -50,6 +63,11 @@ namespace BibliotecaPiezas
             }
         }
 
+        /// <summary>
+        /// Reraliza un movimiento vertical hasta la altura indicada
+        /// </summary>
+        /// <param name="ROBOT">Referencia del robot a mover</param>
+        /// <param name="altura">Altura a la que nos queremos mover</param>
         public static void MovimientoVertical (RoboDK.Item ROBOT, double altura)
         {
             Mat robot_pose = ROBOT.Pose();
@@ -67,6 +85,12 @@ namespace BibliotecaPiezas
             }
         }
 
+        /// <summary>
+        /// Realiza un giro de la herramienta
+        /// </summary>
+        /// <param name="ROBOT">Robot a girar</param>
+        /// <param name="grados">Grados a girar</param>
+        /// <param name="reverse">Indica si se realiza en sentido contrario, por defecto no</param>
         public static void OrientarVentosa (RoboDK.Item ROBOT, double grados, bool reverse = false)
         {
             double[] joints = ROBOT.Joints();
@@ -85,6 +109,10 @@ namespace BibliotecaPiezas
             }
         }
 
+        /// <summary>
+        /// Coloca el robot en el modo de trabajo para la zona amarilla
+        /// </summary>
+        /// <param name="ROBOT">robot a mover</param>
         public static void ZonaAmarilla(RoboDK.Item ROBOT)
         {
             try
@@ -102,6 +130,10 @@ namespace BibliotecaPiezas
             }
         }
 
+        /// <summary>
+        /// Coloca el robot en el modo de trabajo en la zona verde
+        /// </summary>
+        /// <param name="ROBOT">robot a mover</param>
         public static void ZonaVerde(RoboDK.Item ROBOT)
         {
             try
