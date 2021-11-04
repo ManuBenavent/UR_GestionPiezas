@@ -27,6 +27,7 @@ namespace BibliotecaPiezas
         private const int MAX_DIST = 400; // MAX ALCANCE - MAX ANCHO = 410 => 400
         private const int MAX_TRIES = 150;
         private static int ID_PIEZA;
+        private bool GenerarEnAmarilla;
         public bool PiezasPendientes { get { 
                 foreach (Pieza p in Piezas)
                 {
@@ -40,15 +41,16 @@ namespace BibliotecaPiezas
         {
             Piezas = new List<Pieza>();
             ID_PIEZA = 1;
+            GenerarEnAmarilla = true;
         }
 
         /// <summary>
         /// Genera tantas piezas como indica el parámetro sin que colisionen entre sí de tamaño variable.
         /// </summary>
         /// <param name="n">Número de piezas.</param>
-        public int GenerarPiezas (int n)
+        public int GenerarPiezas (int n, bool en_zona_amarilla)
         {
-            int prev_id = ID_PIEZA;
+            GenerarEnAmarilla = en_zona_amarilla;
             Console.WriteLine("Generando piezas");
             Random rnd = new Random();
             List<Pieza> nuevas = new List<Pieza>();
@@ -79,7 +81,7 @@ namespace BibliotecaPiezas
         public bool InsideTablero(Pieza p)
         {
             double dist = Utils.EuclideanDistance(0, 0, p.X, p.Y);
-            return (dist <= MAX_DIST) && (dist >= MIN_DIST);
+            return (dist <= MAX_DIST) && (dist >= (GenerarEnAmarilla? MIN_DIST : Pieza.LIMITE_ZONA_AMARILLA));
         }
 
         /// <summary>

@@ -38,7 +38,7 @@ namespace BibliotecaPiezas
         /// <param name="ROBOT">Referencia RoboDK del robot</param>
         /// <param name="x">posición x</param>
         /// <param name="y">posición y</param>
-        public static void MovimientoHorizontal (RoboDK.Item ROBOT, double x, double y)
+        public static void MovimientoHorizontal (RoboDK.Item ROBOT, double x, double y, bool zona_amarilla = false)
         {
             Mat robot_pose = ROBOT.Pose();
             double[] rob_xyzwpr = robot_pose.ToTxyzRxyz();
@@ -54,7 +54,6 @@ namespace BibliotecaPiezas
                 double[] joints = ROBOT.Joints();
                 double[] pose = ROBOT.Pose().Pos();
                 joints[0] = (Utils.GiroPosNeg(pose[0],pose[1],x,y)<0)?45:135;
-                //ROBOT.MoveJ(joints);
                 if (zona_amarilla)
                     ROBOT.MoveJ(movement_pose);
                 else

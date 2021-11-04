@@ -31,7 +31,7 @@ namespace BibliotecaPiezas
             piezas_validas = new List<bool>();
             foreach (Pieza p in piezas)
             {
-                values.Add((long)Math.Pow(2, p.Alto)); // Con crecimiento exponencial damos preferencia a las mas altas para evitar choques
+                values.Add((long)(p.EnZonaAmarilla?p.Alto:Math.Pow(2, p.Alto))); // Con crecimiento exponencial damos preferencia a las mas altas para evitar choques
                 sizes.Add(p.Ventosas);
                 piezas_validas.Add(p.EnSimulador && !p.Recogida);
             }
